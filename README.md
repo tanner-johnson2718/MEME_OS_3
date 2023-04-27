@@ -17,15 +17,15 @@ We will repeat this type of questioning and digging for increasingly complicated
 # Road Map
 
 ## User Space
-[ ] Hello World
-[ ] Stack Space Exploration (Local Variable Declaration)
-[ ] Heap Exploration (Malloc)
-[ ] File IO
-[ ] Sockets
-[ ] Forks, Process CTL
+* [ ] Hello World
+* [ ] Stack Space Exploration (Local Variable Declaration)
+* [ ] Heap Exploration (Malloc)
+* [ ] File IO
+* [ ] Sockets
+* [ ] Forks, Process CTL
 
 ## Kernel Space
-[ ] ...
+* [ ] ...
 
 # Pre-Reqs
 
