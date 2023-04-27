@@ -5,7 +5,7 @@
 ```C
 #include <stdio.h>
 
-int main(char** argv, int argc)
+int main(int argc, char** argv)
 {
     printf("Hello World\n");
     return 0;
@@ -16,6 +16,8 @@ int main(char** argv, int argc)
 * Execute) `./hello`
 
 # Examining the output
+
+![alt text](Elf-layout--en.svg.png)
 
 * `readelf -a hello` dumps entire output file (ELF format)
 * ELF file is defined by C structures defined in `/usr/include/elf.h`. 
@@ -92,23 +94,22 @@ Key to Flags:
 * Is a table composed of sections
 * Address is virt addr when exe is loaded, offset is where this section is located within ELF file
 
-| Section | Description|
-| --- | --- |
-| *NULL* | First section is always null section |
-| .interp | Contains C string of location of loader (/lib64/ld-linux-x86-64.so.2) | 
+| Section | Description | Value | 
+| --- | --- | --- |
+| *NULL* | First section is always null section | - |
+| .interp | Contains C string of location of dynamic linker | /lib64/ld-linux-x86-64.so.2 |
+| .note.gnu.property | Meta Data Note | x86 feature IBT and SHSTK |
+| .note.gnu.build-id | Meta Data Note | Build ID 0d098f5807214fb4a10978181b153fcb7b09af2a |
+| .note.ABI-tag | Meta Data Note | OS: Linux, ABI: 3.2.0 |
+| .gnu.hash | 
 
 ## Program Header:
 * The view when loading an executable into memory.
 * Table of segments
     * Which themselves are composed of sections.
 * Appears to describe program layout in memory.
-    
-## Resources
-* https://en.wikipedia.org/wiki/Executable_and_Linkable_Format
-* https://github.com/compilepeace/BINARY_DISSECTION_COURSE/blob/master/ELF/ELF.md
-* https://lwn.net/Articles/631631/
 
-# Questions
+## Questions
 * **Q** When I run `./hello` how does it know read ELF header and process it accordingly.
     * **A** ELF file formats defined at `/usr/include/elf.h`
 * **Q** What exactly happens when I excute this bash command?
@@ -118,7 +119,13 @@ Key to Flags:
 * **Q** How does it determine entry point?
     * **A** Matches with offset of .text. This must be where actual machine code of program is stored within ELF?
 * **Q** Interpeter `/lib64/ld-linux-x86-64.so.2`??
+    **A** This is the dynamic linker and is present in all shared library object files. When the program is ran, both this elf and `hello` are loaded into memory. Execution is first passed to the dynamic linker that resolves undefined symbols and handles linking shared libraries.
 * **Q** In Section header, addr and off match up until eh_frame, why?
 
-# Key Systems Topics
+## Key Systems Topics
 * Static and Dynamic Linking
+
+## Resources
+* https://en.wikipedia.org/wiki/Executable_and_Linkable_Format
+* https://github.com/compilepeace/BINARY_DISSECTION_COURSE/blob/master/ELF/ELF.md
+* https://lwn.net/Articles/631631/
