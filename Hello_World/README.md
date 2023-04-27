@@ -18,6 +18,7 @@ int main(char** argv, int argc)
 # Examining the output
 
 * `readelf -a hello` dumps entire output file (ELF format)
+* ELF file is defined by C structure defined in `/usr/include/elf.h`. 
 * ELF header contains meta data on exe. More importantly it points to program header and section header, the two views of an ELF.:
 
 ```
@@ -43,11 +44,56 @@ ELF Header:
   Section header string table index: 30
 ```
 
-* C structure of an elf file defined at `/usr/include/elf.h`
-* Program Header:
-    * Table of segments
-        * Which themselves are composed of sections.
-    * Appears to describe program layout in memory.
+## Section Header:
+```
+$ readelf -S --wide hello
+There are 31 section headers, starting at offset 0x3978:
+
+Section Headers:
+  [Nr] Name              Type            Address          Off    Size   ES Flg Lk Inf Al
+  [ 0]                   NULL            0000000000000000 000000 000000 00      0   0  0
+  [ 1] .interp           PROGBITS        0000000000000318 000318 00001c 00   A  0   0  1
+  [ 2] .note.gnu.property NOTE            0000000000000338 000338 000020 00   A  0   0  8
+  [ 3] .note.gnu.build-id NOTE            0000000000000358 000358 000024 00   A  0   0  4
+  [ 4] .note.ABI-tag     NOTE            000000000000037c 00037c 000020 00   A  0   0  4
+  [ 5] .gnu.hash         GNU_HASH        00000000000003a0 0003a0 000024 00   A  6   0  8
+  [ 6] .dynsym           DYNSYM          00000000000003c8 0003c8 0000a8 18   A  7   1  8
+  [ 7] .dynstr           STRTAB          0000000000000470 000470 000082 00   A  0   0  1
+  [ 8] .gnu.version      VERSYM          00000000000004f2 0004f2 00000e 02   A  6   0  2
+  [ 9] .gnu.version_r    VERNEED         0000000000000500 000500 000020 00   A  7   1  8
+  [10] .rela.dyn         RELA            0000000000000520 000520 0000c0 18   A  6   0  8
+  [11] .rela.plt         RELA            00000000000005e0 0005e0 000018 18  AI  6  24  8
+  [12] .init             PROGBITS        0000000000001000 001000 00001b 00  AX  0   0  4
+  [13] .plt              PROGBITS        0000000000001020 001020 000020 10  AX  0   0 16
+  [14] .plt.got          PROGBITS        0000000000001040 001040 000010 10  AX  0   0 16
+  [15] .plt.sec          PROGBITS        0000000000001050 001050 000010 10  AX  0   0 16
+  [16] .text             PROGBITS        0000000000001060 001060 000185 00  AX  0   0 16
+  [17] .fini             PROGBITS        00000000000011e8 0011e8 00000d 00  AX  0   0  4
+  [18] .rodata           PROGBITS        0000000000002000 002000 000010 00   A  0   0  4
+  [19] .eh_frame_hdr     PROGBITS        0000000000002010 002010 000044 00   A  0   0  4
+  [20] .eh_frame         PROGBITS        0000000000002058 002058 000108 00   A  0   0  8
+  [21] .init_array       INIT_ARRAY      0000000000003db8 002db8 000008 08  WA  0   0  8
+  [22] .fini_array       FINI_ARRAY      0000000000003dc0 002dc0 000008 08  WA  0   0  8
+  [23] .dynamic          DYNAMIC         0000000000003dc8 002dc8 0001f0 10  WA  7   0  8
+  [24] .got              PROGBITS        0000000000003fb8 002fb8 000048 08  WA  0   0  8
+  [25] .data             PROGBITS        0000000000004000 003000 000010 00  WA  0   0  8
+  [26] .bss              NOBITS          0000000000004010 003010 000008 00  WA  0   0  1
+  [27] .comment          PROGBITS        0000000000000000 003010 00002b 01  MS  0   0  1
+  [28] .symtab           SYMTAB          0000000000000000 003040 000618 18     29  46  8
+  [29] .strtab           STRTAB          0000000000000000 003658 000203 00      0   0  1
+  [30] .shstrtab         STRTAB          0000000000000000 00385b 00011a 00      0   0  1
+Key to Flags:
+  W (write), A (alloc), X (execute), M (merge), S (strings), I (info),
+  L (link order), O (extra OS processing required), G (group), T (TLS),
+  C (compressed), x (unknown), o (OS specific), E (exclude),
+  l (large), p (processor specific)
+```
+* The view the linker uses
+## Program Header:
+* The view when loading an executable into memory.
+* Table of segments
+    * Which themselves are composed of sections.
+* Appears to describe program layout in memory.
     
 ## Resources
 * https://en.wikipedia.org/wiki/Executable_and_Linkable_Format
