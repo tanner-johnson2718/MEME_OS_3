@@ -18,7 +18,7 @@ int main(char** argv, int argc)
 # Examining the output
 
 * `readelf -a hello` dumps entire output file (ELF format)
-* ELF file is defined by C structure defined in `/usr/include/elf.h`. 
+* ELF file is defined by C structures defined in `/usr/include/elf.h`. 
 * ELF header contains meta data on exe. More importantly it points to program header and section header, the two views of an ELF.:
 
 ```
@@ -88,7 +88,15 @@ Key to Flags:
   C (compressed), x (unknown), o (OS specific), E (exclude),
   l (large), p (processor specific)
 ```
-* The view the linker uses
+* The view of the ELF the linker uses
+* Is a table composed of sections
+* Address is virt addr when exe is loaded, offset is where this section is located within ELF file
+
+| Section | Description|
+| --- | --- |
+| *NULL* | First section is always null section |
+| .interp | Contains C string of location of loader (/lib64/ld-linux-x86-64.so.2) | 
+
 ## Program Header:
 * The view when loading an executable into memory.
 * Table of segments
@@ -98,6 +106,7 @@ Key to Flags:
 ## Resources
 * https://en.wikipedia.org/wiki/Executable_and_Linkable_Format
 * https://github.com/compilepeace/BINARY_DISSECTION_COURSE/blob/master/ELF/ELF.md
+* https://lwn.net/Articles/631631/
 
 # Questions
 * **Q** When I run `./hello` how does it know read ELF header and process it accordingly.
@@ -108,4 +117,8 @@ Key to Flags:
 * **Q** In program header why is stack mem size 0?
 * **Q** How does it determine entry point?
     * **A** Matches with offset of .text. This must be where actual machine code of program is stored within ELF?
-* **Q** Intereter `/lib64/ld-linux-x86-64.so.2`??
+* **Q** Interpeter `/lib64/ld-linux-x86-64.so.2`??
+* **Q** In Section header, addr and off match up until eh_frame, why?
+
+# Key Systems Topics
+* Static and Dynamic Linking
