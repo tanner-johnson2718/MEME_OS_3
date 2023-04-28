@@ -30,7 +30,7 @@ We will use the simple hello world exectuable as a means to
 * Above is a diagram showing how an ELF file is layed out (as saved on disk)
 * `readelf -a hello` dumps entire output file and gives human readable overview of its contents
 * The ELF file contents are defined by C structures declared in `/usr/include/elf.h`. 
-* The ELF header contains meta data on exe. More importantly it points to program header and section header, the two ways the contents of an ELF are organized or structured.
+* The ELF header contains meta data on the exe. More importantly it points to the program header and section header of the ELF, the two ways the contents of an ELF are organized or structured.
 
 ```
 ELF Header:
@@ -102,7 +102,8 @@ Key to Flags:
 * The view of the ELF the linker uses
 * Is a table composed of sections
 * Address is virt addr when exe is loaded, offset is where this section is located within ELF file
-* Table reserves certain parts of memory for various parts of a programs memory footprint.
+* Table reserves certains parts of memory to be used in various ways
+* Below we look at every section, what it does, and what its contents are in this program.
 
 | Section | Description | Value | 
 | --- | --- | --- |
@@ -150,7 +151,7 @@ Key to Flags:
     * **A** Appears to be an init function pointer symbol for a profiling tool, gprof. If compiled with the profiling flags on, this will be called prior to entry into the main prog.
 * **Q** When is the .plt, .plt.got and .plgt code section called?
 * **Q** `bnd jmpq`, `endbrk`, `nopl` instructions?
-* **Q** Does every dynamically linked function get an entry in 
+* **Q** Does every dynamically linked function get an entry in .plt.sec?
 
 ## Resources
 * [1] https://en.wikipedia.org/wiki/Executable_and_Linkable_Format
