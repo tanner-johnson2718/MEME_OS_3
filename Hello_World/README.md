@@ -15,6 +15,10 @@ int main(int argc, char** argv)
 * Build) `gcc -o hello hello.c`.
 * Execute) `./hello`
 
+# Overview
+
+... define what we are gonna focus on here ...
+
 # Examining the output
 
 ![alt text](Elf-layout--en.svg.png)
@@ -101,7 +105,15 @@ Key to Flags:
 | .note.gnu.property | Meta Data Note | x86 feature IBT and SHSTK |
 | .note.gnu.build-id | Meta Data Note | Build ID 0d098f5807214fb4a10978181b153fcb7b09af2a |
 | .note.ABI-tag | Meta Data Note | OS: Linux, ABI: 3.2.0 |
-| .gnu.hash | 
+| .gnu.hash | Hash table for looking up symbols in smbol table | - |
+| .dynsym | Dynamic Symbols to be resolved during runtime linking | - |
+| .dynstr | ASCII strings of names of symbols in dyamic symbol table | libc.so.6, puts, __cxa_finalize, __libc_start_main, GLIBC_2.2.5, _ITM_deregisterTMCloneTable, __gmon_start__, _ITM_registerTMCloneTable |
+| .gnu.version | Meta Data on GNU Version | GLIBC 2.2.5 |
+| .gnu.version_r | Versioning see [4] | - |
+| .rela.dyn | Relocation table for fixup of dynamic symbols | - |
+| .rela.plt | Relocation table for the fixup of dynamic functions | - |
+| .init | Code section to call gprof init if flag set in complier (and possibly other init code to be ran prior to entry of program) | Run `objdump -d hello` | 
+| .plt | Code section
 
 ## Program Header:
 * The view when loading an executable into memory.
@@ -121,11 +133,19 @@ Key to Flags:
 * **Q** Interpeter `/lib64/ld-linux-x86-64.so.2`??
     **A** This is the dynamic linker and is present in all shared library object files. When the program is ran, both this elf and `hello` are loaded into memory. Execution is first passed to the dynamic linker that resolves undefined symbols and handles linking shared libraries.
 * **Q** In Section header, addr and off match up until eh_frame, why?
+* **Q** GNU Hash?
+* **Q** Why is printf not in .dynstr?
+    * **A** Compiler optimizes this to puts which is a function for putting a string on STDOUT
+* **Q** How are all this sections used in linking?
+    * **A**
+* **Q** What is __gmon_start and what is it called in .init?
+    * **A** Appears to be an init function pointer symbol for a profiling tool, gprof. If compiled with the profiling flags on, this will be called prior to entry into the main prog.
 
 ## Key Systems Topics
 * Static and Dynamic Linking
 
 ## Resources
-* https://en.wikipedia.org/wiki/Executable_and_Linkable_Format
-* https://github.com/compilepeace/BINARY_DISSECTION_COURSE/blob/master/ELF/ELF.md
-* https://lwn.net/Articles/631631/
+* [1] https://en.wikipedia.org/wiki/Executable_and_Linkable_Format
+* [2] https://github.com/compilepeace/BINARY_DISSECTION_COURSE/blob/master/ELF/ELF.md
+* [3] https://lwn.net/Articles/631631/
+* [4] https://refspecs.linuxfoundation.org/LSB_3.0.0/LSB-PDA/LSB-PDA.junk/symversion.html
