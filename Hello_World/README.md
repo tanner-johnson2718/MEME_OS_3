@@ -17,9 +17,13 @@ int main(int argc, char** argv)
 
 # Overview
 
-... define what we are gonna focus on here ...
+We will use the simple hello world exectuable as a means to 
 
-# Examining the output
+1) Examine the format and contents of an ELF executable 
+2) Give a detailed overview by which a process is actually started up
+3) Look at how shared libraries are linked dynamically
+
+# Examining the output (ELF Format and Contents)
 
 ![alt text](Elf-layout--en.svg.png)
 
@@ -97,6 +101,7 @@ Key to Flags:
 * The view of the ELF the linker uses
 * Is a table composed of sections
 * Address is virt addr when exe is loaded, offset is where this section is located within ELF file
+* Table reserves certain parts of memory for various parts of a programs memory footprint.
 
 | Section | Description | Value | 
 | --- | --- | --- |
@@ -113,7 +118,9 @@ Key to Flags:
 | .rela.dyn | Relocation table for fixup of dynamic symbols | - |
 | .rela.plt | Relocation table for the fixup of dynamic functions | - |
 | .init | Code section to call gprof init if flag set in complier (and possibly other init code to be ran prior to entry of program) | Run `objdump -d hello` | 
-| .plt | Code section
+| .plt | Code section for Procedural Linkage Table. Involved in Dynamic Linking | Run `objdump -d hello` |
+| .plt.got | Code section for PLT Global Offset table. Involved in Dynamic Linking | Run `objdump -d hello` |
+| .plt.sec | Code section involved in dynamic linking | Contains the defintion of <puts@plt> |
 
 ## Program Header:
 * The view when loading an executable into memory.
@@ -140,12 +147,26 @@ Key to Flags:
     * **A**
 * **Q** What is __gmon_start and what is it called in .init?
     * **A** Appears to be an init function pointer symbol for a profiling tool, gprof. If compiled with the profiling flags on, this will be called prior to entry into the main prog.
-
-## Key Systems Topics
-* Static and Dynamic Linking
+* **Q** When is the .plt, .plt.got and .plgt code section called?
+* **Q** `bnd jmpq`, `endbrk`, `nopl` instructions?
+* **Q** Does every dynamically linked function get an entry in 
 
 ## Resources
 * [1] https://en.wikipedia.org/wiki/Executable_and_Linkable_Format
 * [2] https://github.com/compilepeace/BINARY_DISSECTION_COURSE/blob/master/ELF/ELF.md
 * [3] https://lwn.net/Articles/631631/
 * [4] https://refspecs.linuxfoundation.org/LSB_3.0.0/LSB-PDA/LSB-PDA.junk/symversion.html
+
+# Process Start Up
+
+![alt text](callgraph.png)
+
+## Resources
+
+* [10] http://dbp-consulting.com/tutorials/debugging/linuxProgramStartup.html
+
+# Dynamic Linking
+
+## Resources
+
+* [20] https://www.airs.com/blog/index.php?s=Linkers
