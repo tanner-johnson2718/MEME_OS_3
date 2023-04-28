@@ -27,9 +27,10 @@ We will use the simple hello world exectuable as a means to
 
 ![alt text](Elf-layout--en.svg.png)
 
-* `readelf -a hello` dumps entire output file (ELF format)
-* ELF file is defined by C structures defined in `/usr/include/elf.h`. 
-* ELF header contains meta data on exe. More importantly it points to program header and section header, the two views of an ELF.:
+* Above is a diagram showing how an ELF file is layed out (as saved on disk)
+* `readelf -a hello` dumps entire output file and gives human readable overview of its contents
+* The ELF file contents are defined by C structures declared in `/usr/include/elf.h`. 
+* The ELF header contains meta data on exe. More importantly it points to program header and section header, the two ways the contents of an ELF are organized or structured.
 
 ```
 ELF Header:
