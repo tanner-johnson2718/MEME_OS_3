@@ -136,6 +136,47 @@ Key to Flags:
 | .shstrtab | String table for section names | `readelf -p .shstrtab hello` | 
 
 ## Program Header:
+```
+$ readelf -l --wide hello
+
+Elf file type is DYN (Shared object file)
+Entry point 0x1060
+There are 13 program headers, starting at offset 64
+
+Program Headers:
+  Type           Offset   VirtAddr           PhysAddr           FileSiz  MemSiz   Flg Align
+  PHDR           0x000040 0x0000000000000040 0x0000000000000040 0x0002d8 0x0002d8 R   0x8
+  INTERP         0x000318 0x0000000000000318 0x0000000000000318 0x00001c 0x00001c R   0x1
+      [Requesting program interpreter: /lib64/ld-linux-x86-64.so.2]
+  LOAD           0x000000 0x0000000000000000 0x0000000000000000 0x0005f8 0x0005f8 R   0x1000
+  LOAD           0x001000 0x0000000000001000 0x0000000000001000 0x0001f5 0x0001f5 R E 0x1000
+  LOAD           0x002000 0x0000000000002000 0x0000000000002000 0x000160 0x000160 R   0x1000
+  LOAD           0x002db8 0x0000000000003db8 0x0000000000003db8 0x000258 0x000260 RW  0x1000
+  DYNAMIC        0x002dc8 0x0000000000003dc8 0x0000000000003dc8 0x0001f0 0x0001f0 RW  0x8
+  NOTE           0x000338 0x0000000000000338 0x0000000000000338 0x000020 0x000020 R   0x8
+  NOTE           0x000358 0x0000000000000358 0x0000000000000358 0x000044 0x000044 R   0x4
+  GNU_PROPERTY   0x000338 0x0000000000000338 0x0000000000000338 0x000020 0x000020 R   0x8
+  GNU_EH_FRAME   0x002010 0x0000000000002010 0x0000000000002010 0x000044 0x000044 R   0x4
+  GNU_STACK      0x000000 0x0000000000000000 0x0000000000000000 0x000000 0x000000 RW  0x10
+  GNU_RELRO      0x002db8 0x0000000000003db8 0x0000000000003db8 0x000248 0x000248 R   0x1
+
+ Section to Segment mapping:
+  Segment Sections...
+   00     
+   01     .interp 
+   02     .interp .note.gnu.property .note.gnu.build-id .note.ABI-tag .gnu.hash .dynsym .dynstr .gnu.version .gnu.version_r .rela.dyn .rela.plt 
+   03     .init .plt .plt.got .plt.sec .text .fini 
+   04     .rodata .eh_frame_hdr .eh_frame 
+   05     .init_array .fini_array .dynamic .got .data .bss 
+   06     .dynamic 
+   07     .note.gnu.property 
+   08     .note.gnu.build-id .note.ABI-tag 
+   09     .note.gnu.property 
+   10     .eh_frame_hdr 
+   11     
+   12     .init_array .fini_array .dynamic .got 
+
+```
 * The view when loading an executable into memory.
 * Table of segments
     * Which themselves are composed of sections.
@@ -146,7 +187,7 @@ Key to Flags:
 ### Linking Questions
 * **Q** How are all these sections used in linking?
 * **Q** Interpeter `/lib64/ld-linux-x86-64.so.2`??
-    **A** This is the dynamic linker and is present in all shared library object files. When the program is ran, both this elf and `hello` are loaded into memory. Execution is first passed to the dynamic linker that resolves undefined symbols and handles linking shared libraries.
+    * **A** This is the dynamic linker and is present in all shared library object files. When the program is ran, both this elf and `hello` are loaded into memory. Execution is first passed to the dynamic linker that resolves undefined symbols and handles linking shared libraries.
 
 #### PLT and GOT
 * **Q** Does every dynamically linked function get an entry in .plt.sec?
@@ -172,6 +213,7 @@ Key to Flags:
 * **Q** What exactly happens when I run `./hello`.
     * **A** Program execution will be covered in future topics
 * **Q** In program header why is virt addr and phys addr the same?
+    * **A** phys addr is important only in embedded systems without a virt memory system.
 * **Q** In program header why is GNU stack mem size 0?
 * **Q** How does it determine entry point?
     * **A** Matches with offset of .text. This must be where actual machine code of program is stored within ELF.
@@ -182,8 +224,6 @@ Key to Flags:
     * **A** Appears to be an init function pointer symbol for a profiling tool, gprof. If compiled with the profiling flags on, this will be called prior to entry into the main prog.
 * **Q** `bnd jmpq`, `endbrk`, `nopl` instructions?
 * **Q** Are their limits to what kind of code can be called in these init, fini and pre init sections? How can this be used?
-
-
 
 ## Resources
 * [1] https://en.wikipedia.org/wiki/Executable_and_Linkable_Format
