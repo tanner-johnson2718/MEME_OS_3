@@ -1,4 +1,4 @@
-# Hello World
+# Hello World, What did you give me?
 
 * Code)
 
@@ -17,11 +17,7 @@ int main(int argc, char** argv)
 
 # Overview
 
-We will use the simple hello world exectuable as a means to 
-
-1) Examine the format and contents of an ELF executable 
-2) Give a detailed overview by which a process is actually started up
-3) Look at how shared libraries are linked dynamically
+We will use the simple hello world exectuable as a means to examine the format and contents of an ELF executable. This is one of the first questions one might have after creating a hello world. The 4 or so lines of the hello world can explained away pretty easily even though there is alot going on, but its not so easy to explain away the fact that the hello world executable is several KB. Why is this? If you are reading this you probably are faintly aware of assembly and have done a dissembly of an executable. When on disasembles the hello world its very clear there is more going on here then meets the eye. Thus this is where we begin our adventure. We will look at the ELF format and the contents of an executable. This will lead to way way more questions then get answered, but this makes it a good starting point for this project.
 
 # Examining the output (ELF Format and Contents)
 
@@ -146,35 +142,48 @@ Key to Flags:
 * Appears to describe program layout in memory.
 
 ## Questions
-* **Q** When I run `./hello` how does it know read ELF header and process it accordingly.
-    * **A** ELF file formats defined at `/usr/include/elf.h`
-* **Q** What exactly happens when I run `./hello`.
-* **Q** In program header why is virt addr and phys addr the same?
-* **Q** In program header why is stack mem size 0?
-* **Q** How does it determine entry point?
-    * **A** Matches with offset of .text. This must be where actual machine code of program is stored within ELF.
+
+### Linking Questions
+* **Q** How are all these sections used in linking?
 * **Q** Interpeter `/lib64/ld-linux-x86-64.so.2`??
     **A** This is the dynamic linker and is present in all shared library object files. When the program is ran, both this elf and `hello` are loaded into memory. Execution is first passed to the dynamic linker that resolves undefined symbols and handles linking shared libraries.
-* **Q** In Section header, addr and off match up until eh_frame, why?
-* **Q** GNU Hash?
-* **Q** Why is printf not in .dynstr?
-    * **A** Compiler optimizes this to puts which is a function for putting a string on STDOUT
-* **Q** How are all this sections used in linking?
-    * **A**
-* **Q** What is __gmon_start and what is it called in .init?
-    * **A** Appears to be an init function pointer symbol for a profiling tool, gprof. If compiled with the profiling flags on, this will be called prior to entry into the main prog.
-* **Q** When is the .plt, .plt.got and .plgt code section called?
-* **Q** `bnd jmpq`, `endbrk`, `nopl` instructions?
+
+#### PLT and GOT
 * **Q** Does every dynamically linked function get an entry in .plt.sec?
-* **Q** What are all the functions in the .text section?
-* **Q** What does compiling with debug symbols do to the output?
+* **Q** plt.got vs got?
+* **Q** When is the .plt, .plt.got and .plgt code section called?
+
+#### EH frames and section
+* **Q** In Section header, addr and off match up until eh_frame, why?
+* **Q** Why Does eh frame get mapper to 2 sections (linker scripts)?
 * **Q** Can we look at these EH frames, CFI?
 * **Q** Unwinding Problem?
 * **Q** eh section loaded RO? How do we push CFI to it.
-* **Q** Are their limits to what kind of code can be called in these init, fini and pre init sections?
-* **Q** plt.got vs got?
+
+#### Symbols
 * **Q** dso_handle?
 * **Q** What exactly are these entries in the symbol table?
+* **Q** What does compiling with debug symbols do to the output?
+* **Q** What are all the functions in the .text section?
+
+### Random Questions
+* **Q** When I run `./hello` how does it know read ELF header and process it accordingly.
+    * **A** ELF file formats defined at `/usr/include/elf.h`
+* **Q** What exactly happens when I run `./hello`.
+    * **A** Program execution will be covered in future topics
+* **Q** In program header why is virt addr and phys addr the same?
+* **Q** In program header why is GNU stack mem size 0?
+* **Q** How does it determine entry point?
+    * **A** Matches with offset of .text. This must be where actual machine code of program is stored within ELF.
+* **Q** GNU Hash?
+* **Q** Why is printf not in .dynstr?
+    * **A** Compiler optimizes this to puts which is a function for putting a string on STDOUT
+* **Q** What is __gmon_start and what is it called in .init?
+    * **A** Appears to be an init function pointer symbol for a profiling tool, gprof. If compiled with the profiling flags on, this will be called prior to entry into the main prog.
+* **Q** `bnd jmpq`, `endbrk`, `nopl` instructions?
+* **Q** Are their limits to what kind of code can be called in these init, fini and pre init sections? How can this be used?
+
+
 
 ## Resources
 * [1] https://en.wikipedia.org/wiki/Executable_and_Linkable_Format

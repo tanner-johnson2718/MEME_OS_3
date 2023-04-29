@@ -2,7 +2,7 @@
 
 In the first installment of MEME OS we built a virtual linux OS using build root, customized the kernel, and linked a GDB debugger to the kernel while executing in QEMU. In MEME OS 2 we created a bare bones OS and some bare metal drivers again targeting QEMU.
 
-MEME OS 3 will take a bit of a detour. The eleavator pitch is "everything your 4000 level OS Comp Sci class should have been". This project will be an exploration of a linux system running on actual hardware. We will treat our linux system as object of study. Starting from a hello world, we will look at:
+MEME OS 3 will take a bit of a detour. The eleavator pitch is "everything your 4000 level OS Comp Sci class should have been". This project will be an exploration of a linux system running on actual hardware. We will treat our linux system as object of study. Starting from a hello world, we will look at things like:
 
 * What does `#include <stdio.h>` do **exactly**?
     * Where are the definitions and declarations of libraries inlcude like this?
@@ -17,15 +17,12 @@ We will repeat this type of questioning and digging for increasingly complicated
 To keep projected well bounded we will implace the following contraints)
 
 * Only look at what can be gathered from user space C programs, command line tools, and system interfaces. (Still include references to kernel code or headers but focus on what can be seen / interfaced with via a terminal or C program in user land).
-* Use a singular program as a means to examine a small set of topics. Predefine what will be examined with each program. And push discussion of topics outside those predefined to a future program that will examine and highlight that topic.
+* Use a singular program as a means to examine and exlempify a singular topic. Predefine what will be examined with each program. And push discussion of topics outside those predefined to a future program that will examine and highlight that topic.
 * Make a road map of precisely what topics will be explored
 
 # Road Map
 
-* [ ] Hello World
-    * [ ] ELF executable format 
-    * [ ] Process Start Up
-    * [ ] Linking (Static and Dynamic)
+* [ ] [Hello World, What did you give me?](./Hello_World/)
 * [ ] Stack Space Exploration (Local Variable Declaration)
 * [ ] Heap Exploration (Malloc)
 * [ ] File IO
