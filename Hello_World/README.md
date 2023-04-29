@@ -123,6 +123,7 @@ Key to Flags:
 | .plt | Code section for Procedural Linkage Table. Involved in Dynamic Linking | Run `objdump -d hello` |
 | .plt.got | Code section for PLT Global Offset table. Involved in Dynamic Linking | Run `objdump -d hello` |
 | .plt.sec | Code section involved in dynamic linking | Contains the defintion of <puts@plt> |
+| .start | Code section of actual executable with  |  |
 
 ## Program Header:
 * The view when loading an executable into memory.

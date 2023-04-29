@@ -17,11 +17,15 @@ We will repeat this type of questioning and digging for increasingly complicated
 To keep projected well bounded we will implace the following contraints)
 
 * Only look at what can be gathered from user space C programs, command line tools, and system interfaces. (Still include references to kernel code or headers but focus on what can be seen / interfaced with via a terminal or C program in user land).
-* Use a singular program as a means to examine a small set of topics. 
+* Use a singular program as a means to examine a small set of topics. Predefine what will be examined with each program. And push discussion of topics outside those predefined to a future program that will examine and highlight that topic.
+* Make a road map of precisely what topics will be explored
 
 # Road Map
 
 * [ ] Hello World
+    * [ ] ELF executable format 
+    * [ ] Process Start Up
+    * [ ] Linking (Static and Dynamic)
 * [ ] Stack Space Exploration (Local Variable Declaration)
 * [ ] Heap Exploration (Malloc)
 * [ ] File IO
