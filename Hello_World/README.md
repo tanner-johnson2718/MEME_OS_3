@@ -114,7 +114,7 @@ Key to Flags:
 | .gnu.version | Meta Data on GNU Version | GLIBC 2.2.5 |
 | .gnu.version_r | Versioning see [4] | - |
 | .rela.dyn | Relocation table for fixup of dynamic symbols | - |
-| .rela.plt | Relocation table for the fixup of dynamic functions | - |
+| .rela.plt | Relocation table for the fixup of dynamic functions | puts@GLIBC_2.2.5 |
 | .init | Code section to call gprof init if flag set in complier (and possibly other init code to be ran prior to entry of program) | Run `objdump -d hello` | 
 | .plt | Code section for Procedural Linkage Table. Involved in Dynamic Linking | Run `objdump -d hello` |
 | .plt.got | Code section for PLT Global Offset table. Involved in Dynamic Linking | Run `objdump -d hello` |
@@ -181,6 +181,12 @@ Program Headers:
 * Table of segments
     * Which themselves are composed of sections.
 * Appears to describe program layout in memory.
+* Most important take away is the mapping of sections into segments to be loaded into memory
+    * Believe this is dictated by linker scripts
+
+## Exercise, Where the F**k is Waldo?
+
+Goal of this exercise is to write C code that can explore some of the things stored in memory mentioned above. Will put this in `ph_exp.c`. Use output of this program, readelf and objdump to find as many sections as possible.
 
 ## Questions
 
@@ -196,7 +202,7 @@ Program Headers:
 
 #### EH frames and section
 * **Q** In Section header, addr and off match up until eh_frame, why?
-* **Q** Why Does eh frame get mapper to 2 sections (linker scripts)?
+* **Q** Why Does eh frame get mapped to 2 sections (linker scripts)?
 * **Q** Can we look at these EH frames, CFI?
 * **Q** Unwinding Problem?
 * **Q** eh section loaded RO? How do we push CFI to it.
@@ -207,23 +213,29 @@ Program Headers:
 * **Q** What does compiling with debug symbols do to the output?
 * **Q** What are all the functions in the .text section?
 
+### Program Headers Questions
+* **Q** In program header why is virt addr and phys addr the same?
+    * **A** phys addr is important only in embedded systems without a virt memory system.
+* **Q** Where are the stack and heap relative to the program headers?
+* **Q** Why are several section mapped multiple times to segments?
+* **Q** In program header why is GNU stack mem size 0?
+
 ### Random Questions
 * **Q** When I run `./hello` how does it know read ELF header and process it accordingly.
     * **A** ELF file formats defined at `/usr/include/elf.h`
 * **Q** What exactly happens when I run `./hello`.
-    * **A** Program execution will be covered in future topics
-* **Q** In program header why is virt addr and phys addr the same?
-    * **A** phys addr is important only in embedded systems without a virt memory system.
-* **Q** In program header why is GNU stack mem size 0?
+    * **A** Program execution will be covered in future topic
 * **Q** How does it determine entry point?
     * **A** Matches with offset of .text. This must be where actual machine code of program is stored within ELF.
 * **Q** GNU Hash?
+    * **A** Hashtable to speed up symbol table look up
 * **Q** Why is printf not in .dynstr?
     * **A** Compiler optimizes this to puts which is a function for putting a string on STDOUT
 * **Q** What is __gmon_start and what is it called in .init?
     * **A** Appears to be an init function pointer symbol for a profiling tool, gprof. If compiled with the profiling flags on, this will be called prior to entry into the main prog.
 * **Q** `bnd jmpq`, `endbrk`, `nopl` instructions?
 * **Q** Are their limits to what kind of code can be called in these init, fini and pre init sections? How can this be used?
+
 
 ## Resources
 * [1] https://en.wikipedia.org/wiki/Executable_and_Linkable_Format
