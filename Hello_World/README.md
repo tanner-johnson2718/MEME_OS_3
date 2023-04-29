@@ -123,7 +123,21 @@ Key to Flags:
 | .plt | Code section for Procedural Linkage Table. Involved in Dynamic Linking | Run `objdump -d hello` |
 | .plt.got | Code section for PLT Global Offset table. Involved in Dynamic Linking | Run `objdump -d hello` |
 | .plt.sec | Code section involved in dynamic linking | Contains the defintion of <puts@plt> |
-| .start | Code section of actual executable with  |  |
+| .text | Code section that contains users compiled assembly. Also contains severs compiler inserted functions  | _start, deregister_tm_clones, register_tm_clones, __do_global_dtors_aux, frame_dummy, main, __libc_csu_init, __libc_csu_fini |
+| .fini | Code section for termination code | _fini code, appears to be empty boiler plate |
+| .rodata | Contains all string literals | "Hello World" |
+| .eh_frame_hdr | Header for exeption handling frames (CFI) | - |
+| .eh_frame | Section for frame data | - |
+| .init_array | Array of function pointers that are executed prior to exection of main. Mark these functions w/ __attribute__((constructor(PRIO))) where PRIO is priorty > 100 | 0x1140 (frame dummy) |
+| .fini_array | Array of function pointers that are executed upon proper exit of main | 0x1100 (__do_global_dtors_aux) |
+| .dynamic | Used in dynamic linking | `readelf -d hello` |
+| .got | Global Offset Table, addresses of global variables and functions | 0x3dc8 (points to .dynamic in mem)|
+| .data | Inialized Global variables are defined here | none | __data_start, __dso_handle | 
+| .bss | Uninitialized data of program | Not actually stored on disk in ELF file, only exists when loaded into memory |
+| .comment | GCC and OS metadata | GCC 9.4.0, Ubuntu 20.04.1 |
+| .symtab | Appears to store all the "important" things location in memory | `readelf -s hello` |
+| strtab | Stores the strings associated with the entries in the symtable (static only) | `readelf -p .strtab hello` |
+| .shstrtab | String table for section names | `readelf -p .shstrtab hello` | 
 
 ## Program Header:
 * The view when loading an executable into memory.
@@ -134,12 +148,11 @@ Key to Flags:
 ## Questions
 * **Q** When I run `./hello` how does it know read ELF header and process it accordingly.
     * **A** ELF file formats defined at `/usr/include/elf.h`
-* **Q** What exactly happens when I excute this bash command?
-    * **A** 
+* **Q** What exactly happens when I run `./hello`.
 * **Q** In program header why is virt addr and phys addr the same?
 * **Q** In program header why is stack mem size 0?
 * **Q** How does it determine entry point?
-    * **A** Matches with offset of .text. This must be where actual machine code of program is stored within ELF?
+    * **A** Matches with offset of .text. This must be where actual machine code of program is stored within ELF.
 * **Q** Interpeter `/lib64/ld-linux-x86-64.so.2`??
     **A** This is the dynamic linker and is present in all shared library object files. When the program is ran, both this elf and `hello` are loaded into memory. Execution is first passed to the dynamic linker that resolves undefined symbols and handles linking shared libraries.
 * **Q** In Section header, addr and off match up until eh_frame, why?
@@ -153,6 +166,15 @@ Key to Flags:
 * **Q** When is the .plt, .plt.got and .plgt code section called?
 * **Q** `bnd jmpq`, `endbrk`, `nopl` instructions?
 * **Q** Does every dynamically linked function get an entry in .plt.sec?
+* **Q** What are all the functions in the .text section?
+* **Q** What does compiling with debug symbols do to the output?
+* **Q** Can we look at these EH frames, CFI?
+* **Q** Unwinding Problem?
+* **Q** eh section loaded RO? How do we push CFI to it.
+* **Q** Are their limits to what kind of code can be called in these init, fini and pre init sections?
+* **Q** plt.got vs got?
+* **Q** dso_handle?
+* **Q** What exactly are these entries in the symbol table?
 
 ## Resources
 * [1] https://en.wikipedia.org/wiki/Executable_and_Linkable_Format
