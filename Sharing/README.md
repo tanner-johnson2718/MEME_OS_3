@@ -9,7 +9,27 @@ In static linking ALL compiled code is copied and contained in the final executa
 * Execute `readelf -a lib.o --wide `
 
 ```
-...
+ELF Header:
+  Magic:   7f 45 4c 46 02 01 01 00 00 00 00 00 00 00 00 00 
+  Class:                             ELF64
+  Data:                              2's complement, little endian
+  Version:                           1 (current)
+  OS/ABI:                            UNIX - System V
+  ABI Version:                       0
+  Type:                              REL (Relocatable file)
+  Machine:                           Advanced Micro Devices X86-64
+  Version:                           0x1
+  Entry point address:               0x0
+  Start of program headers:          0 (bytes into file)
+  Start of section headers:          608 (bytes into file)
+  Flags:                             0x0
+  Size of this header:               64 (bytes)
+  Size of program headers:           0 (bytes)
+  Number of program headers:         0
+  Size of section headers:           64 (bytes)
+  Number of section headers:         12
+  Section header string table index: 11
+
 Section Headers:
   [Nr] Name              Type            Address          Off    Size   ES Flg Lk Inf Al
   [ 0]                   NULL            0000000000000000 000000 000000 00      0   0  0
@@ -62,11 +82,20 @@ Displaying notes found in: .note.gnu.property
   GNU                  0x00000010	NT_GNU_PROPERTY_TYPE_0	      Properties: x86 feature: IBT, SHSTK
 ```
 
+* We an see from the above ELF dump that it is much simplier than the hello world ELF
+* It pretty much only contains the code and meta data
+* It contains no information on how to map any of the code or data sections into memory
+    * No program headers
+* Note the type is a relocatable file (hello world was a shared object file), which is essentially assembled code with no program headers.
+
 ## Questions
 
 * What role do header files play in linking?
 * How are command line args passed?
 * Return codes?
+* .rela.eh_frame?
+* x86 feature: IBT, SHSTK?
+* OLD QUESTION, eh frames?
 
 ## Resources
 
