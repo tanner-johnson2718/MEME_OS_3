@@ -2,9 +2,9 @@
 
 In this installment we will examine the process of linking. In [hello world](../Hello_World/) we looked at the contents and format of an executable. Many of the contents of an executable are reserved for the process of linking. Thus linking is natural second topic. We will first look at static linking followed by dynamic linking. The end goal here is first to obviously understand this process, but secondly to answer our unanswered questions from the previous exercise.
 
-## Static Linking
+## What exactly is GCC doing?
 
-In static linking ALL compiled code is copied and contained in the final executable. To highlight this process we have two C files, `exe.c` and `lib.c`. `exe.c` will contain our main function and it will call a single function from `lib.c`. In order to fully understand linking, the reader should be aware that when we call `gcc` it produces an exe through several stages. These are Preprocessing (cpp) -> Compiler (cc1) -> Assembling (as) -> Linking (ld).
+We have two C files, `exe.c` and `lib.c`. `exe.c` will contain our main function and it will call a single function from `lib.c`. In order to fully understand linking, the reader should be aware that when we call `gcc` it produces an exe through several stages. These are Preprocessing (cpp) -> Compiler (cc1) -> Assembling (as) -> Linking (ld). In this section we give a brief overview of exactly what happens when going from a `.c` to an ELF file that can be linked or executed.
 
 ### Preprocessing
 Preprocessing outside the scope of this project, but this is the stage where preprocessor macros are evaluated.
@@ -20,7 +20,7 @@ int is_odd(int x)     // declared in lib.h
 }
 ```
 
-Output)
+Output `cpp lib.c ./lib.i`)
 ```C
 # 1 "lib.c"
 # 1 "<built-in>"
@@ -31,13 +31,8 @@ Output)
 # 1 "lib.c"
 # 1 "lib.h" 1
 
-
-
-
-
 int is_odd(int x);
 # 2 "lib.c" 2
-
 
 int is_odd(int x)
 {
@@ -45,8 +40,64 @@ int is_odd(int x)
 }
 ```
 
+The meaning of the directives at the top will be left for a later study. The key take away here is the declaration has been moved and the `#define BASE 2` directive has replaced all `BASE` references with its target value of 2.
 
-* Execute `readelf -a lib.o --wide `
+### Compiling
+
+Compilation is the process of turning C into assembly. Again this is outside the scope of this investigation, but we show what is going on for the sake of completness and as a point of entry for future investigation. The input is the `lib.i` file shown above and the output is the result of `cc lib.i -o main.s`)
+
+```
+.file	"lib.c"
+	.text
+	.globl	is_odd
+	.type	is_odd, @function
+is_odd:
+.LFB0:
+	.cfi_startproc
+	endbr64
+	pushq	%rbp
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	movq	%rsp, %rbp
+	.cfi_def_cfa_register 6
+	movl	%edi, -4(%rbp)
+	movl	-4(%rbp), %eax
+	cltd
+	shrl	$31, %edx
+	addl	%edx, %eax
+	andl	$1, %eax
+	subl	%edx, %eax
+	popq	%rbp
+	.cfi_def_cfa 7, 8
+	ret
+	.cfi_endproc
+.LFE0:
+	.size	is_odd, .-is_odd
+	.ident	"GCC: (Ubuntu 9.4.0-1ubuntu1~20.04.1) 9.4.0"
+	.section	.note.GNU-stack,"",@progbits
+	.section	.note.gnu.property,"a"
+	.align 8
+	.long	 1f - 0f
+	.long	 4f - 1f
+	.long	 5
+0:
+	.string	 "GNU"
+1:
+	.align 8
+	.long	 0xc0000002
+	.long	 3f - 2f
+2:
+	.long	 0x3
+3:
+	.align 8
+4:
+```
+
+The key take away here is 1 we now have x86 assembly of our `lib.c` code and we also have meta data and some of the section data that populates into our final ELF.
+
+### Assembling
+
+Assembling creates the ELF output we are familiar with. The assembler is invoked via `as lib.s -o lib.o`. Execute `readelf -a lib.o --wide `)
 
 ```
 ELF Header:
@@ -128,7 +179,7 @@ Displaying notes found in: .note.gnu.property
     * No program headers
 * Note the type is a relocatable file (hello world was a shared object file), which is essentially assembled code with no program headers.
 
-Now we
+## Static Linking
 
 ## Questions
 
@@ -142,4 +193,4 @@ Now we
 
 ## Resources
 
-* [1] [CSAPP](../Computer%20Systems%20A%20Programmers%20Perspective%20(3rd).pdf)(Chapter 7)s
+* [1] [CSAPP](../Computer%20Systems%20A%20Programmers%20Perspective%20(3rd).pdf)(Chapter 7)
