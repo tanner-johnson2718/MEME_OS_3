@@ -314,9 +314,3 @@ init_func1 Pos       = 0x55c0ca700189
 ## Resources
 
 * [10] http://dbp-consulting.com/tutorials/debugging/linuxProgramStartup.html
-
-# Dynamic Linking
-
-## Resources
-
-* [20] https://www.airs.com/blog/index.php?s=Linkers
