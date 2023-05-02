@@ -233,7 +233,7 @@ int main(void)
 
 ```
 $ ./ph
-here
+Starting...
 Main Frame Stack Pos = 0x7ffe427dff7f
 malloc rela Pos      = 0x7fdf4bb940e0
 printf rela Pos      = 0x7fdf4bb5bc90
@@ -276,8 +276,11 @@ init_func1 Pos       = 0x55c0ca700189
 * **Q** In program header why is virt addr and phys addr the same?
     * **A** phys addr is important only in embedded systems without a virt memory system.
 * **Q** Where are the stack and heap relative to the program headers?
+    * **A** See exercise above.
 * **Q** Why are several section mapped multiple times to segments?
+    * **A** Appears as though a section only appears twice if one of those occurances is in a load segment. Thus it would make sense that some sections would be assigned twice if it needs to be in a memory and a non load section.
 * **Q** In program header why is GNU stack mem size 0?
+    * **A** the GNU stack is a stack extension and space is only allocated if this is needed.
 
 ### Random Questions
 * **Q** When I run `./hello` how does it know read ELF header and process it accordingly.
@@ -292,8 +295,10 @@ init_func1 Pos       = 0x55c0ca700189
     * **A** Compiler optimizes this to puts which is a function for putting a string on STDOUT
 * **Q** What is __gmon_start and what is it called in .init?
     * **A** Appears to be an init function pointer symbol for a profiling tool, gprof. If compiled with the profiling flags on, this will be called prior to entry into the main prog.
-* **Q** `bnd jmpq`, `endbrk`, `nopl` instructions?
+* **Q** `bnd jmpq` and `endbrk` instructions?
+    * **A** BND is an intrsuction prefix making use of intel MPX indicating to check target branch against register stored bounds. The endbr64 is described here https://stackoverflow.com/questions/56905811/what-does-the-endbr64-instruction-actually-do. 
 * **Q** Are their limits to what kind of code can be called in these init, fini and pre init sections? How can this be used?
+    * **A** In both the init and fini sections code has access too dynamically linked libaries. Can be used as constructor and destructors.
 
 
 ## Resources
