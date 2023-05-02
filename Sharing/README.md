@@ -88,6 +88,8 @@ Displaying notes found in: .note.gnu.property
     * No program headers
 * Note the type is a relocatable file (hello world was a shared object file), which is essentially assembled code with no program headers.
 
+Now we
+
 ## Questions
 
 * What role do header files play in linking?
@@ -96,7 +98,8 @@ Displaying notes found in: .note.gnu.property
 * .rela.eh_frame?
 * x86 feature: IBT, SHSTK?
 * OLD QUESTION, eh frames?
+* Globals in two files?
 
 ## Resources
 
-* [1]
+* [1] Linking.pdf

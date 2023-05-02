@@ -23,7 +23,7 @@ To keep projected well bounded we will implace the following contraints)
 # Road Map
 
 * [X] [Hello World, What did you give me?](./Hello_World/)
-* [ ] [Sharing, A Link to the Past](./Sharing/)
+* [ ] [Sharing, A Link to the Past (Linking)](./Sharing/)
 * [ ] Stack Space Exploration (Local Variable Declaration)
 * [ ] Heap Exploration (Malloc)
 * [ ] File IO
