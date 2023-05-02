@@ -124,7 +124,7 @@ Key to Flags:
 | .rodata | Contains all string literals | "Hello World" |
 | .eh_frame_hdr | Header for exeption handling frames (CFI) | - |
 | .eh_frame | Section for frame data | - |
-| .init_array | Array of function pointers that are executed prior to exection of main. Mark these functions w/ __attribute__((constructor(PRIO))) where PRIO is priorty > 100 | 0x1140 (frame dummy) |
+| .init_array | Array of function pointers that are executed prior to exection of main. Mark these functions w/ `__attribute__((constructor(PRIO)))` where PRIO is priorty > 100 | 0x1140 (frame dummy) |
 | .fini_array | Array of function pointers that are executed upon proper exit of main | 0x1100 (__do_global_dtors_aux) |
 | .dynamic | Used in dynamic linking | `readelf -d hello` |
 | .got | Global Offset Table, addresses of global variables and functions | 0x3dc8 (points to .dynamic in mem)|
@@ -186,7 +186,66 @@ Program Headers:
 
 ## Exercise, Where the F**k is Waldo?
 
-Goal of this exercise is to write C code that can explore some of the things stored in memory mentioned above. Will put this in `ph_exp.c`. Use output of this program, readelf and objdump to find as many sections as possible.
+Goal of this exercise is to write C code that can explore some of the things stored in memory mentioned above. Will put this in `ph_exp.c`. Use output of this program, readelf and objdump to get an idea of where these sectons fall into program memory, relative to the stack and heap.
+
+```C
+// Program to explore its own org in memory.
+
+#include <stdio.h>
+#include <stdlib.h>
+
+int gbl_uninit;
+int gbl_init = 0;
+char* gbl_str = "GBL";
+
+__attribute__((constructor(101))) void init_func1(void)
+{
+    printf("Starting...\n");
+    return;
+}
+
+int func1(int x)
+{
+    return x+1;
+}
+
+int main(void) 
+{
+    unsigned char dummy = 0;
+    char* local_str = "LCL";
+    unsigned char* main_frame_stack_pos = &dummy;
+    unsigned char* heap_start_pos = malloc(0x1000);
+
+    printf("Main Frame Stack Pos = %p\n", main_frame_stack_pos);                // Top of address space (from main frame perspective)
+    printf("malloc rela Pos      = %p\n", (unsigned char*) malloc);
+    printf("printf rela Pos      = %p\n", (unsigned char*) printf);
+    printf("Heap Start Pos       = %p\n", heap_start_pos);                      // ??
+    printf("Un-Init Gobal Pos    = %p\n", (unsigned char*) &gbl_uninit);        // .bss
+    printf("Init Gobal Pos       = %p\n", (unsigned char*) &gbl_init);          // .data
+    printf("Local String Pos     = %p\n", (unsigned char*) local_str);          // .rodata +4
+    printf("Global String Pos    = %p\n", (unsigned char*) gbl_str);            // .rodata
+    printf("main Pos             = %p\n", (unsigned char*) main);               // .text + ?? + len(func1)
+    printf("func1 Pos            = %p\n", (unsigned char*) func1);              // .text + ??
+    printf("init_func1 Pos       = %p\n", (unsigned char*) init_func1);         // .text
+    return 0;
+}
+```
+
+```
+$ ./ph
+here
+Main Frame Stack Pos = 0x7ffe427dff7f
+malloc rela Pos      = 0x7fdf4bb940e0
+printf rela Pos      = 0x7fdf4bb5bc90
+Heap Start Pos       = 0x55c0cb2446b0
+Un-Init Gobal Pos    = 0x55c0ca703020
+Init Gobal Pos       = 0x55c0ca70301c
+Local String Pos     = 0x55c0ca70100d
+Global String Pos    = 0x55c0ca701004
+main Pos             = 0x55c0ca7001b3
+func1 Pos            = 0x55c0ca7001a0
+init_func1 Pos       = 0x55c0ca700189
+```
 
 ## Questions
 
