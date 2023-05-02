@@ -12,7 +12,7 @@ MEME OS 3 will take a bit of a detour. The eleavator pitch is "everything your 4
     * Execution?
 * ... etc ...
 
-We will repeat this type of questioning and digging for increasingly complicated boiler plate C and linux code. The goal here being make precise and rigorious the exact system processes we take for granted while programming and use this type of "playing" or "exploring" as a mechanism for understanding how linux works.
+We will repeat this type of questioning and digging for increasingly complicated boiler plate C and linux code. The goal here being make precise and rigorious the exact system processes we take for granted while programming and use this type of "playing" or "exploring" as a mechanism for understanding how linux works, starting from hello world.
 
 To keep projected well bounded we will implace the following contraints)
 

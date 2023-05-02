@@ -4,7 +4,47 @@ In this installment we will examine the process of linking. In [hello world](../
 
 ## Static Linking
 
-In static linking ALL compiled code is copied and contained in the final executable. To highlight this process we have two C files, `exe.c` and `lib.c`. `exe.c` will contain our main function and it will call a single function from `lib.c`. The first step is to compile our "library", `gcc -c lib.c`, which produces `lib.o`.
+In static linking ALL compiled code is copied and contained in the final executable. To highlight this process we have two C files, `exe.c` and `lib.c`. `exe.c` will contain our main function and it will call a single function from `lib.c`. In order to fully understand linking, the reader should be aware that when we call `gcc` it produces an exe through several stages. These are Preprocessing (cpp) -> Compiler (cc1) -> Assembling (as) -> Linking (ld).
+
+### Preprocessing
+Preprocessing outside the scope of this project, but this is the stage where preprocessor macros are evaluated.
+
+Input)
+```C
+#include "lib.h"
+
+// Returns 0 if even, 1 if odd
+int is_odd(int x)     // declared in lib.h
+{
+    return x % BASE;  // declared in lib.h
+}
+```
+
+Output)
+```C
+# 1 "lib.c"
+# 1 "<built-in>"
+# 1 "<command-line>"
+# 31 "<command-line>"
+# 1 "/usr/include/stdc-predef.h" 1 3 4
+# 32 "<command-line>" 2
+# 1 "lib.c"
+# 1 "lib.h" 1
+
+
+
+
+
+int is_odd(int x);
+# 2 "lib.c" 2
+
+
+int is_odd(int x)
+{
+    return x % 2;
+}
+```
+
 
 * Execute `readelf -a lib.o --wide `
 
