@@ -102,4 +102,4 @@ Now we
 
 ## Resources
 
-* [1] Linking.pdf
+* [1] [CSAPP](../Computer%20Systems%20A%20Programmers%20Perspective%20(3rd).pdf)(Chapter 7)s
