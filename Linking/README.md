@@ -1,22 +1,23 @@
 # Hello World, A link to the past
 
-In this installment we will examine the process of linking. In [hello world](../Hello_World/) we looked at the contents and format of an executable. Many of the contents of an executable are reserved for the process of linking. Thus linking is natural second topic. We will first look at static linking followed by dynamic linking. The end goal here is first to obviously understand this process, but secondly to answer our unanswered questions from the previous exercise.
+In this installment we will examine the process of linking. In [hello world](../Hello_World/) we looked at the contents and format of an executable. Many of the contents of an executable are reserved for the process of linking. Thus linking is natural second topic. We will first look at static linking followed by dynamic linking. The end goal here is first to obviously understand this process, but secondly to answer our unanswered questions from the previous exercise. 
+
+To highlight the process of linking we slightly complicated the classic hello world by placing the "hello world" string as global in a library accesed through an accesor function in the example library. The main entry point is contained in `exe.c` and this accesor is contained in `lib.c`.
 
 ## What exactly is GCC doing?
 
-We have two C files, `exe.c` and `lib.c`. `exe.c` will contain our main function and it will call a single function from `lib.c`. In order to fully understand linking, the reader should be aware that when we call `gcc` it produces an exe through several stages. These are Preprocessing (cpp) -> Compiler (cc1) -> Assembling (as) -> Linking (ld). In this section we give a brief overview of exactly what happens when going from a `.c` to an ELF file that can be linked or executed.
+In order to fully understand linking, the reader should be aware that when we call `gcc` it produces an exe through several stages, each of which are seperate command line tools. These are Preprocessing (cpp) -> Compiler (cc) -> Assembling (as) -> Linking (ld). In this section we give a brief overview of exactly what happens when going from a `.c` to an ELF file that can be linked or executed.
 
 ### Preprocessing
 Preprocessing outside the scope of this project, but this is the stage where preprocessor macros are evaluated.
 
 Input)
 ```C
-#include "lib.h"
+#define STRING "Hello"
+char* string_ptr = STRING;
 
-// Returns 0 if even, 1 if odd
-int is_odd(int x)     // declared in lib.h
-{
-    return x % BASE;  // declared in lib.h
+int get_str(int x) {
+  return string_ptr;
 }
 ```
 
@@ -29,29 +30,38 @@ Output `cpp lib.c ./lib.i`)
 # 1 "/usr/include/stdc-predef.h" 1 3 4
 # 32 "<command-line>" 2
 # 1 "lib.c"
-# 1 "lib.h" 1
 
-int is_odd(int x);
-# 2 "lib.c" 2
+char* string_ptr = "Hello";
 
-int is_odd(int x)
-{
-    return x % 2;
+char* get_str(int x) {
+    return string_ptr;
 }
+
 ```
 
-The meaning of the directives at the top will be left for a later study. The key take away here is the declaration has been moved and the `#define BASE 2` directive has replaced all `BASE` references with its target value of 2.
+The meaning of the directives at the top will be left for a later study and can be further researched [here](https://gcc.gnu.org/onlinedocs/cpp/Preprocessor-Output.html). The key take away here is that the preprocessor macro `STRING` has been evaluated based on its definition in the same file and the code file that actually gets compiled has a string literal in place of the macro.
 
 ### Compiling
 
-Compilation is the process of turning C into assembly. Again this is outside the scope of this investigation, but we show what is going on for the sake of completness and as a point of entry for future investigation. The input is the `lib.i` file shown above and the output is the result of `cc lib.i -o main.s`)
+Compilation is the process of turning C into assembly source code. Again a detailed investigation is outside of out current scope, but we as we will see several artifacts that are used in linking appear first in the assembly output. The input file is the `lib.i` intermediate file shown above and the output is the result of `cc -S lib.i`)
 
 ```
-.file	"lib.c"
+	.file	"lib.c"
 	.text
-	.globl	is_odd
-	.type	is_odd, @function
-is_odd:
+	.globl	string_ptr
+	.section	.rodata
+.LC0:
+	.string	"Hello"
+	.section	.data.rel.local,"aw"
+	.align 8
+	.type	string_ptr, @object
+	.size	string_ptr, 8
+string_ptr:
+	.quad	.LC0
+	.text
+	.globl	get_str
+	.type	get_str, @function
+get_str:
 .LFB0:
 	.cfi_startproc
 	endbr64
@@ -61,18 +71,13 @@ is_odd:
 	movq	%rsp, %rbp
 	.cfi_def_cfa_register 6
 	movl	%edi, -4(%rbp)
-	movl	-4(%rbp), %eax
-	cltd
-	shrl	$31, %edx
-	addl	%edx, %eax
-	andl	$1, %eax
-	subl	%edx, %eax
+	movq	string_ptr(%rip), %rax
 	popq	%rbp
 	.cfi_def_cfa 7, 8
 	ret
 	.cfi_endproc
 .LFE0:
-	.size	is_odd, .-is_odd
+	.size	get_str, .-get_str
 	.ident	"GCC: (Ubuntu 9.4.0-1ubuntu1~20.04.1) 9.4.0"
 	.section	.note.GNU-stack,"",@progbits
 	.section	.note.gnu.property,"a"
@@ -91,9 +96,10 @@ is_odd:
 3:
 	.align 8
 4:
+
 ```
 
-The key take away here is 1 we now have x86 assembly of our `lib.c` code and we also have meta data and some of the section data that populates into our final ELF.
+After compilation proper, we a resemblance to an ELF file explored previously. Sections start to appear such as .text (compiled user code) and .rodata (string literals). The [x86 ref](https://docs.oracle.com/cd/E26502_01/html/E28388/eoiyg.html) has some useful info and 
 
 ### Assembling
 
