@@ -43,7 +43,7 @@ The meaning of the directives at the top will be left for a later study and can 
 
 ### Compiling
 
-Compilation is the process of turning C into assembly source code. Again a detailed investigation is outside of out current scope, but we as we will see several artifacts that are used in linking appear first in the assembly output. The input file is the `lib.i` intermediate file shown above and the output is the result of `cc -S lib.i`)
+Compilation is the process of turning C into assembly source code. Again a detailed investigation is outside of our current scope, but as we will see several artifacts that are used in linking appear first in the assembly output. The input file is the `lib.i` intermediate file shown above and the output is the result of `cc -S lib.i`)
 
 ```assembly
 	.file	"lib.c"             ; Create file type symbol table entry w/ name "lib.c"
@@ -98,7 +98,7 @@ get_str:                              ; Assebly of function entry point
 
 ```
 
-After compilation proper, we a resemblance to an ELF file explored previously. Sections start to appear such as .text (compiled user code) and .rodata (string literals). It appears as though the `.LC0, .LFB0, and .LFE0` are compiler "local variables" that do not survive assembly. Also the .cfi directives are used in exception handling and outside our current scope. Regardless we can see two imporatant things here. First data funtions, and meta data are organized into sections via the `.section` directive. Second, we now have compiled aseembly instead of C code. Runnging through the above assembly we can see that we get a "recipe" for constructing our final ELF.
+After compilation proper, we see a resemblance to an ELF file explored previously. Sections start to appear such as .text (compiled user code) and .rodata (string literals). It appears as though the `.LC0, .LFB0, and .LFE0` are compiler "local variables" that do not survive assembly. Also the .cfi directives are used in exception handling and outside our current scope. Regardless we can see two important things here. First data, funtions, and meta data are organized into sections via the `.section` directive. Second, we now have compiled aseembly instead of C code. Running through the above assembly we can see that we get a "recipe" for constructing our final ELF.
 
 * [x86 ref](https://docs.oracle.com/cd/E26502_01/html/E28388/eoiyg.html)
 
@@ -119,29 +119,33 @@ ELF Header:
   Version:                           0x1
   Entry point address:               0x0
   Start of program headers:          0 (bytes into file)
-  Start of section headers:          608 (bytes into file)
+  Start of section headers:          792 (bytes into file)
   Flags:                             0x0
   Size of this header:               64 (bytes)
   Size of program headers:           0 (bytes)
   Number of program headers:         0
   Size of section headers:           64 (bytes)
-  Number of section headers:         12
-  Section header string table index: 11
+  Number of section headers:         16
+  Section header string table index: 15
 
 Section Headers:
   [Nr] Name              Type            Address          Off    Size   ES Flg Lk Inf Al
   [ 0]                   NULL            0000000000000000 000000 000000 00      0   0  0
-  [ 1] .text             PROGBITS        0000000000000000 000040 00001b 00  AX  0   0  1
-  [ 2] .data             PROGBITS        0000000000000000 00005b 000000 00  WA  0   0  1
-  [ 3] .bss              NOBITS          0000000000000000 00005b 000000 00  WA  0   0  1
-  [ 4] .comment          PROGBITS        0000000000000000 00005b 00002c 01  MS  0   0  1
-  [ 5] .note.GNU-stack   PROGBITS        0000000000000000 000087 000000 00      0   0  1
-  [ 6] .note.gnu.property NOTE            0000000000000000 000088 000020 00   A  0   0  8
-  [ 7] .eh_frame         PROGBITS        0000000000000000 0000a8 000038 00   A  0   0  8
-  [ 8] .rela.eh_frame    RELA            0000000000000000 0001e0 000018 18   I  9   7  8
-  [ 9] .symtab           SYMTAB          0000000000000000 0000e0 0000f0 18     10   9  8
-  [10] .strtab           STRTAB          0000000000000000 0001d0 00000e 00      0   0  1
-  [11] .shstrtab         STRTAB          0000000000000000 0001f8 000067 00      0   0  1
+  [ 1] .text             PROGBITS        0000000000000000 000040 000011 00  AX  0   0  1
+  [ 2] .rela.text        RELA            0000000000000000 000240 000018 18   I 13   1  8
+  [ 3] .data             PROGBITS        0000000000000000 000051 000000 00  WA  0   0  1
+  [ 4] .bss              NOBITS          0000000000000000 000051 000000 00  WA  0   0  1
+  [ 5] .rodata           PROGBITS        0000000000000000 000051 000006 00   A  0   0  1
+  [ 6] .data.rel.local   PROGBITS        0000000000000000 000058 000008 00  WA  0   0  8
+  [ 7] .rela.data.rel.local RELA            0000000000000000 000258 000018 18   I 13   6  8
+  [ 8] .comment          PROGBITS        0000000000000000 000060 00002c 01  MS  0   0  1
+  [ 9] .note.GNU-stack   PROGBITS        0000000000000000 00008c 000000 00      0   0  1
+  [10] .note.gnu.property NOTE            0000000000000000 000090 000020 00   A  0   0  8
+  [11] .eh_frame         PROGBITS        0000000000000000 0000b0 000038 00   A  0   0  8
+  [12] .rela.eh_frame    RELA            0000000000000000 000270 000018 18   I 13  11  8
+  [13] .symtab           SYMTAB          0000000000000000 0000e8 000138 18     14  11  8
+  [14] .strtab           STRTAB          0000000000000000 000220 00001a 00      0   0  1
+  [15] .shstrtab         STRTAB          0000000000000000 000288 000089 00      0   0  1
 Key to Flags:
   W (write), A (alloc), X (execute), M (merge), S (strings), I (info),
   L (link order), O (extra OS processing required), G (group), T (TLS),
@@ -154,30 +158,42 @@ There are no program headers in this file.
 
 There is no dynamic section in this file.
 
-Relocation section '.rela.eh_frame' at offset 0x1e0 contains 1 entry:
+Relocation section '.rela.text' at offset 0x240 contains 1 entry:
+    Offset             Info             Type               Symbol's Value  Symbol's Name + Addend
+000000000000000b  0000000b00000002 R_X86_64_PC32          0000000000000000 string_ptr - 4
+
+Relocation section '.rela.data.rel.local' at offset 0x258 contains 1 entry:
+    Offset             Info             Type               Symbol's Value  Symbol's Name + Addend
+0000000000000000  0000000500000001 R_X86_64_64            0000000000000000 .rodata + 0
+
+Relocation section '.rela.eh_frame' at offset 0x270 contains 1 entry:
     Offset             Info             Type               Symbol's Value  Symbol's Name + Addend
 0000000000000020  0000000200000002 R_X86_64_PC32          0000000000000000 .text + 0
 
 The decoding of unwind sections for machine type Advanced Micro Devices X86-64 is not currently supported.
 
-Symbol table '.symtab' contains 10 entries:
+Symbol table '.symtab' contains 13 entries:
    Num:    Value          Size Type    Bind   Vis      Ndx Name
      0: 0000000000000000     0 NOTYPE  LOCAL  DEFAULT  UND 
      1: 0000000000000000     0 FILE    LOCAL  DEFAULT  ABS lib.c
      2: 0000000000000000     0 SECTION LOCAL  DEFAULT    1 
-     3: 0000000000000000     0 SECTION LOCAL  DEFAULT    2 
-     4: 0000000000000000     0 SECTION LOCAL  DEFAULT    3 
+     3: 0000000000000000     0 SECTION LOCAL  DEFAULT    3 
+     4: 0000000000000000     0 SECTION LOCAL  DEFAULT    4 
      5: 0000000000000000     0 SECTION LOCAL  DEFAULT    5 
      6: 0000000000000000     0 SECTION LOCAL  DEFAULT    6 
-     7: 0000000000000000     0 SECTION LOCAL  DEFAULT    7 
-     8: 0000000000000000     0 SECTION LOCAL  DEFAULT    4 
-     9: 0000000000000000    27 FUNC    GLOBAL DEFAULT    1 is_odd
+     7: 0000000000000000     0 SECTION LOCAL  DEFAULT    9 
+     8: 0000000000000000     0 SECTION LOCAL  DEFAULT   10 
+     9: 0000000000000000     0 SECTION LOCAL  DEFAULT   11 
+    10: 0000000000000000     0 SECTION LOCAL  DEFAULT    8 
+    11: 0000000000000000     8 OBJECT  GLOBAL DEFAULT    6 string_ptr
+    12: 0000000000000000    17 FUNC    GLOBAL DEFAULT    1 get_str
 
 No version information found in this file.
 
 Displaying notes found in: .note.gnu.property
   Owner                Data size 	Description
   GNU                  0x00000010	NT_GNU_PROPERTY_TYPE_0	      Properties: x86 feature: IBT, SHSTK
+
 ```
 
 * We an see from the above ELF dump that it is much simplier than the hello world ELF
@@ -185,14 +201,84 @@ Displaying notes found in: .note.gnu.property
 * It contains no information on how to map any of the code or data sections into memory
     * No program headers
 * Note the type is a relocatable file (hello world was a shared object file), which is essentially assembled code with no program headers.
+* **Q** x86 feature: IBT, SHSTK?
+* **Q** OLD QUESTION, eh frames?
 
-## Static Linking
+## Symbols, What could they mean? (BONUS C Keywords!!!)
 
-## Questions
+The assembly output of the compiler gave us the recipe for building a relocatable ELF file as shown above. The recipe defined sections, symbols, global data, and compiled code. Data and compiled code are straight forward. Sections were covered in the previous hello world investigation. So in this section we look at symbols and the symbol table.
 
-* .rela.eh_frame?
-* x86 feature: IBT, SHSTK?
-* OLD QUESTION, eh frames?
+### Globals, Locals, Externs, Functions and their symbols
+
+Below we craft a C file to exemplify how various global variables, functions, and certain keywords affect the contents of the symbol table. This is compiled with `gcc -c sym_0.c`. Then we include the generated symbol table below that.
+
+```C
+extern int undef_sym;
+
+int global_init = 1;
+int global_uninit;
+
+static int static_global_init =1;
+static int static_global_uninit;
+
+int f1()
+{
+    return 0;
+}
+
+int main() {
+    int local = 0;
+    static int static_local = 1;
+
+    local = undef_sym;
+}
+```
+
+```
+$ readelf -s sym_0.o
+
+Symbol table '.symtab' contains 17 entries:
+   Num:    Value          Size Type    Bind   Vis      Ndx Name
+     0: 0000000000000000     0 NOTYPE  LOCAL  DEFAULT  UND 
+     1: 0000000000000000     0 FILE    LOCAL  DEFAULT  ABS sym_0.c
+     2: 0000000000000000     0 SECTION LOCAL  DEFAULT    1 
+     3: 0000000000000000     0 SECTION LOCAL  DEFAULT    3 
+     4: 0000000000000000     0 SECTION LOCAL  DEFAULT    4 
+     5: 0000000000000004     4 OBJECT  LOCAL  DEFAULT    3 static_global_init
+     6: 0000000000000000     4 OBJECT  LOCAL  DEFAULT    4 static_global_uninit
+     7: 0000000000000008     4 OBJECT  LOCAL  DEFAULT    3 static_local.1920
+     8: 0000000000000000     0 SECTION LOCAL  DEFAULT    6 
+     9: 0000000000000000     0 SECTION LOCAL  DEFAULT    7 
+    10: 0000000000000000     0 SECTION LOCAL  DEFAULT    8 
+    11: 0000000000000000     0 SECTION LOCAL  DEFAULT    5 
+    12: 0000000000000000     4 OBJECT  GLOBAL DEFAULT    3 global_init
+    13: 0000000000000004     4 OBJECT  GLOBAL DEFAULT  COM global_uninit
+    14: 0000000000000000    15 FUNC    GLOBAL DEFAULT    1 f1
+    15: 000000000000000f    31 FUNC    GLOBAL DEFAULT    1 main
+    16: 0000000000000000     0 NOTYPE  GLOBAL DEFAULT  UND undef_sym
+```
+
+The first thing to note is that local variables do not populate into the symbol table. An `objdump` of `sym_0.o` shows that local variables are implemented by allocating stack space. Thus when on encounters a local statement `int x = 0;`, one should take this as telling the compiler to allocated 4 bytes on the stack and assign 0 to it.
+
+```C
+typedef struct
+{
+  Elf64_Word	st_name;		/* Symbol name (string tbl index) */
+  unsigned char	st_info;		/* Symbol type and binding */
+  unsigned char st_other;		/* Symbol visibility */
+  Elf64_Section	st_shndx;		/* Section index */
+  Elf64_Addr	st_value;		/* Symbol value */
+  Elf64_Xword	st_size;		/* Symbol size */
+} Elf64_Sym;
+```
+
+* switch statements
+* what about like struct or enum definitions?
+* other c keywords
+* debug symbols -g section
+* Add point of clarification on shstrtab vs strtab
+
+## Relocation? Static Libraries and archives?
 
 ## Resources
 
