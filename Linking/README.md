@@ -45,8 +45,8 @@ The meaning of the directives at the top will be left for a later study and can 
 
 Compilation is the process of turning C into assembly source code. Again a detailed investigation is outside of out current scope, but we as we will see several artifacts that are used in linking appear first in the assembly output. The input file is the `lib.i` intermediate file shown above and the output is the result of `cc -S lib.i`)
 
-```
-	.file	"lib.c"
+```assembly
+	.file	"lib.c"                       # Creare 
 	.text
 	.globl	string_ptr
 	.section	.rodata
@@ -98,6 +98,9 @@ get_str:
 4:
 
 ```
+
+It appears as though the `.LC0, .LFB0, and .LFE0` are compiler "local variables" that do not survive assembly. Regardless we can see two imporatant things here. First data funtions, and meta data are organized into sections via the `.section` directive. Second, we know have compiled aseembly instead of C code. Runnging through the above assembly directly we can see that we get almost a "recipe" for constructing an exe. We added commets to the above output
+
 
 After compilation proper, we a resemblance to an ELF file explored previously. Sections start to appear such as .text (compiled user code) and .rodata (string literals). The [x86 ref](https://docs.oracle.com/cd/E26502_01/html/E28388/eoiyg.html) has some useful info and 
 
