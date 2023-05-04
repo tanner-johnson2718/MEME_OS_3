@@ -8,6 +8,6 @@
 
 char* string_ptr = "Hello";
 
-char* get_str(int x) {
+char* get_str() {
     return string_ptr;
 }

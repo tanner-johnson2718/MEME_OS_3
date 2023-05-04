@@ -16,7 +16,7 @@ Input)
 #define STRING "Hello"
 char* string_ptr = STRING;
 
-int get_str(int x) {
+int get_str() {
   return string_ptr;
 }
 ```
@@ -70,19 +70,18 @@ get_str:                              ; Assebly of function entry point
 	.cfi_offset 6, -16
 	movq	%rsp, %rbp                ; Set new stack frame base ptr
 	.cfi_def_cfa_register 6
-	movl	%edi, -4(%rbp)            ; 
-	movq	string_ptr(%rip), %rax
-	popq	%rbp
+	movq	string_ptr(%rip), %rax    ; Copy "place holder" addr of string into ret reg
+	popq	%rbp                      ; Restore old stack base pointer
 	.cfi_def_cfa 7, 8
 	ret
 	.cfi_endproc
 .LFE0:
-	.size	get_str, .-get_str
-	.ident	"GCC: (Ubuntu 9.4.0-1ubuntu1~20.04.1) 9.4.0"
-	.section	.note.GNU-stack,"",@progbits
-	.section	.note.gnu.property,"a"
+	.size	get_str, .-get_str        ; Set size of get_str sybol
+	.ident	"GCC: (Ubuntu 9.4.0-1ubuntu1~20.04.1) 9.4.0" ; Add comment to .coomment section
+	.section	.note.GNU-stack,"",@progbits   ; Create section
+	.section	.note.gnu.property,"a"         ; Create section
 	.align 8
-	.long	 1f - 0f
+	.long	 1f - 0f                           ; from here on below, add gnu property meta data
 	.long	 4f - 1f
 	.long	 5
 0:
@@ -191,13 +190,9 @@ Displaying notes found in: .note.gnu.property
 
 ## Questions
 
-* What role do header files play in linking?
-* How are command line args passed?
-* Return codes?
 * .rela.eh_frame?
 * x86 feature: IBT, SHSTK?
 * OLD QUESTION, eh frames?
-* Globals in two files?
 
 ## Resources
 
