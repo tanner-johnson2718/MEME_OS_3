@@ -46,31 +46,31 @@ The meaning of the directives at the top will be left for a later study and can 
 Compilation is the process of turning C into assembly source code. Again a detailed investigation is outside of out current scope, but we as we will see several artifacts that are used in linking appear first in the assembly output. The input file is the `lib.i` intermediate file shown above and the output is the result of `cc -S lib.i`)
 
 ```assembly
-	.file	"lib.c"                       # Creare 
-	.text
-	.globl	string_ptr
-	.section	.rodata
+	.file	"lib.c"             ; Create file type symbol table entry w/ name "lib.c"
+	.text                       ; Make current active section .text
+	.globl	string_ptr          ; Add "string_ptr" to symbol table as global
+	.section	.rodata         ; Make and switch to .rodata section
 .LC0:
-	.string	"Hello"
-	.section	.data.rel.local,"aw"
+	.string	"Hello"                   ; Place string literal into object at cur loc
+	.section	.data.rel.local,"aw"  ; Define non reserved section with flags
 	.align 8
-	.type	string_ptr, @object
-	.size	string_ptr, 8
+	.type	string_ptr, @object       ; Sets symbol type to object (data)
+	.size	string_ptr, 8             ; Sets symbol size
 string_ptr:
-	.quad	.LC0
-	.text
-	.globl	get_str
-	.type	get_str, @function
-get_str:
+	.quad	.LC0                      ; Allocate space object for pointer
+	.text                             ; Switch to .text section
+	.globl	get_str                   ; Add "get_str" to symbol table as global
+	.type	get_str, @function        ; Define type to be function
+get_str:                              ; Assebly of function entry point
 .LFB0:
 	.cfi_startproc
-	endbr64
-	pushq	%rbp
+	endbr64                           ; Mark this locale as suitable for call
+	pushq	%rbp                      ; Push Old stack frame base ptr 
 	.cfi_def_cfa_offset 16
 	.cfi_offset 6, -16
-	movq	%rsp, %rbp
+	movq	%rsp, %rbp                ; Set new stack frame base ptr
 	.cfi_def_cfa_register 6
-	movl	%edi, -4(%rbp)
+	movl	%edi, -4(%rbp)            ; 
 	movq	string_ptr(%rip), %rax
 	popq	%rbp
 	.cfi_def_cfa 7, 8
@@ -99,10 +99,9 @@ get_str:
 
 ```
 
-It appears as though the `.LC0, .LFB0, and .LFE0` are compiler "local variables" that do not survive assembly. Regardless we can see two imporatant things here. First data funtions, and meta data are organized into sections via the `.section` directive. Second, we know have compiled aseembly instead of C code. Runnging through the above assembly directly we can see that we get almost a "recipe" for constructing an exe. We added commets to the above output
+After compilation proper, we a resemblance to an ELF file explored previously. Sections start to appear such as .text (compiled user code) and .rodata (string literals). It appears as though the `.LC0, .LFB0, and .LFE0` are compiler "local variables" that do not survive assembly. Also the .cfi directives are used in exception handling and outside our current scope. Regardless we can see two imporatant things here. First data funtions, and meta data are organized into sections via the `.section` directive. Second, we know have compiled aseembly instead of C code. Runnging through the above assembly we can see that we get a "recipe" for constructing our final ELF.
 
-
-After compilation proper, we a resemblance to an ELF file explored previously. Sections start to appear such as .text (compiled user code) and .rodata (string literals). The [x86 ref](https://docs.oracle.com/cd/E26502_01/html/E28388/eoiyg.html) has some useful info and 
+* [x86 ref](https://docs.oracle.com/cd/E26502_01/html/E28388/eoiyg.html)
 
 ### Assembling
 
