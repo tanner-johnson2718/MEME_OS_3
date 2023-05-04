@@ -99,7 +99,7 @@ get_str:                              ; Assebly of function entry point
 
 ```
 
-After compilation proper, we a resemblance to an ELF file explored previously. Sections start to appear such as .text (compiled user code) and .rodata (string literals). It appears as though the `.LC0, .LFB0, and .LFE0` are compiler "local variables" that do not survive assembly. Also the .cfi directives are used in exception handling and outside our current scope. Regardless we can see two imporatant things here. First data funtions, and meta data are organized into sections via the `.section` directive. Second, we know have compiled aseembly instead of C code. Runnging through the above assembly we can see that we get a "recipe" for constructing our final ELF.
+After compilation proper, we a resemblance to an ELF file explored previously. Sections start to appear such as .text (compiled user code) and .rodata (string literals). It appears as though the `.LC0, .LFB0, and .LFE0` are compiler "local variables" that do not survive assembly. Also the .cfi directives are used in exception handling and outside our current scope. Regardless we can see two imporatant things here. First data funtions, and meta data are organized into sections via the `.section` directive. Second, we now have compiled aseembly instead of C code. Runnging through the above assembly we can see that we get a "recipe" for constructing our final ELF.
 
 * [x86 ref](https://docs.oracle.com/cd/E26502_01/html/E28388/eoiyg.html)
 
