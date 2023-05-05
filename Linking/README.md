@@ -275,6 +275,7 @@ typedef struct
 ```
 
 Returning to our `sym_0.c` file we can make a few comments.
+* Global Varibales declared `extern` (`undef_sym`) get put in the psudeo section UND to let the linker know this reference is defined else where. If at the end of the linking process there remains any undefined symbols then it throws an error.
 * Inited global variables (`global_init`) get placed in the .data section and have a global binding indicating other files can freely reference these variables.
 * Uninited global vaiables (`global_uninit`) gets placed in a psdeuo section COM i.e. COMMON. This section is not actually phsically present, instead it let's the linker know that we have an uninited global variable. The linker will place this in the .bss section of the final executable but will throw an error if it finds an inited symbol of the same name.
 * Static inited global variables (`static_global_init`) get placed in the .data section. Note the value of this entry is 4 b/c this is the offset within the .data section one find this variable. Also note the LOCAL binding indicating this variables scope is limited to this file.
@@ -282,22 +283,44 @@ Returning to our `sym_0.c` file we can make a few comments.
 * Functions get placed in the .text section.
 * Local static variables will get placed in .data or .bss based on inited or not. But key thing is that the compiler adds a postfix to the symbol name to make it unique. This is because two functions in the same file could use the same local static variable name, but these two variables do not refer to the same data.
 * Final point of clarification, the string table index stored in the symbol table entry indexed the .strtab section. The .shstrtab is the string table indexed by section table entries.
+* **Q** ABS?
+* **Q** Why are some sections added to symbol table?
+* **Q** Why are some files added to the symbol table
+
 
 ### Symbol Resolution
-* weak bindings https://docs.oracle.com/cd/E19683-01/816-1386/chapter2-11/index.html
-* file and section types?
 
-### Other C Keywords
+Global Symbol Resolution Rules)
+* Functions and inited global variables cannot have two defintions
+* References of uninited global variables will be resolved to an inited global variable of the same name if it exists.
+* Two uninted global variables, either symbol is used.
+
+Static Libraries)
+* A static library is just a concatenation of relocatable object files
+* Use `ar` command line tool to create them from a colection of .o files
+* Allows one to have a collection of smaller relocatable files such that references to symbols in the static library do not add the entire library, just the relocatable file from which the symbol is in.
+
+Ordering Matters)
+* Suppose we pass the linker a set of input files and archives.
+* The linker will link these files into a single elf using the following process
+* Let $E$ be set of relocatable files to be added to final elf
+* Let $U$ be set of undefined symbols
+* Let $D$ be set of defined symbols
+* For each file $f$:
+  * If $f$ is single relocatable, then $E = E \union {f}$ 
+
+* weak bindings https://docs.oracle.com/cd/E19683-01/816-1386/chapter2-11/index.html
+
+### Other C Keywords and addendums
 
 * switch statements
 * what about like struct or enum definitions?
 * other c keywords
-
 * debug symbols -g section
-* Why are some sections added to symbol table?
 
 
-## Relocation? Static Libraries and archives?
+
+## Relocation?
 
 ## Resources
 
