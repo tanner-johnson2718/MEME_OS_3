@@ -303,11 +303,25 @@ Static Libraries)
 Ordering Matters)
 * Suppose we pass the linker a set of input files and archives.
 * The linker will link these files into a single elf using the following process
+
 * Let $E$ be set of relocatable files to be added to final elf
 * Let $U$ be set of undefined symbols
 * Let $D$ be set of defined symbols
 * For each file $f$:
-  * If $f$ is single relocatable, then $E = E \cup \{ f \}$ 
+  * If $f$ is single relocatable:
+    * Add $f$ to $E$
+    * Update set of defined symbols from $f$ into $D$
+    * Update set of undefined symbols from $f$ into $U$
+  * If $f$ is archive:
+    * While change occur in $E$, $D$, or $U$:
+      * For each relocatable object $m$ in $f$:
+        * If $m$ defines symbol needed currently in $U$:
+          * Add $m$ to $E$
+          * Update $U$ and $D$
+
+Essentially the above routine does a linear scan of all files passed to the linker. If its a single relocatable, add its symbols and relocatble file contents to the output, updating undefined symbols as we find them in future files. If its a archive file, keep looping over the relocatable modules found in the archive until there is no change. At the end if their remains any undefined symbols then throw an error, otherwise no error.
+
+From this we can gather 2 important details in linking. 1) the ordering within a archive does not affect the output but may affect the time it takes to link. 2) and most importantly, the order of the files sent to the linker matter. If file `a.o` refences symbols in `b.o`, `b.o` must come after `a.o` on the file input array to the linker.
 
 * weak bindings https://docs.oracle.com/cd/E19683-01/816-1386/chapter2-11/index.html
 
