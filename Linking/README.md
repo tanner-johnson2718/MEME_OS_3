@@ -307,7 +307,7 @@ Ordering Matters)
 * Let $U$ be set of undefined symbols
 * Let $D$ be set of defined symbols
 * For each file $f$:
-  * If $f$ is single relocatable, then $E = E \cup \{f\}$ 
+  * If $f$ is single relocatable, then $E = E \cup \{ f \}$ 
 
 * weak bindings https://docs.oracle.com/cd/E19683-01/816-1386/chapter2-11/index.html
 
