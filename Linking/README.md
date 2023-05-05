@@ -1,6 +1,6 @@
 # Hello World, A link to the past
 
-In this installment we will examine the process of linking. In [hello world](../Hello_World/) we looked at the contents and format of an executable. Many of the contents of an executable are reserved for the process of linking. Thus linking is a natural second topic. We will first look at static linking followed by dynamic linking. The end goal here is first to obviously understand this process, but secondly to answer our unanswered questions from the previous exercise. 
+In this installment we will examine the process of STATIC linking. In [hello world](../Hello_World/) we looked at the contents and format of an executable. Many of the contents of an executable are reserved for the process of linking. Thus linking is a natural second topic. We will first look at the process by which a .c file is turned into an elf, then we will look at the symbol table and how symbols are resolved. And finally we will look at how the location of input object files are combined to create the end executable. The end goal here is first to obviously understand this process, but secondly to answer our unanswered questions from the previous exercise. 
 
 To highlight the process of linking we slightly complicated the classic hello world. We now have two C files, a library containting the "hello world" string as global and accesed through an accesor function. The main entry point is contained in `exe.c` and this accesor is contained in `lib.c`.
 
@@ -323,7 +323,7 @@ Essentially the above routine does a linear scan of all files passed to the link
 
 From this we can gather 2 important details in linking. 1) the ordering within a archive does not affect the output but may affect the time it takes to link. 2) and most importantly, the order of the files sent to the linker matter. If file `a.o` refences symbols in `b.o`, `b.o` must come after `a.o` on the file input array to the linker.
 
-* weak bindings https://docs.oracle.com/cd/E19683-01/816-1386/chapter2-11/index.html
+Finally there is a notion of weak bindings that is discussed [here](https://docs.oracle.com/cd/E19683-01/816-1386/chapter2-11/index.html). The purpose of weak binding is so that we can reference symbols that may or may not be included in the final exe without introducing compiler errors.
 
 ### Other C Keywords and addendums
 
@@ -331,8 +331,6 @@ From this we can gather 2 important details in linking. 1) the ordering within a
 * what about like struct or enum definitions?
 * other c keywords
 * debug symbols -g section
-
-
 
 ## Relocation?
 
