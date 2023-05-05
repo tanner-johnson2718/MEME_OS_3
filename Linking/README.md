@@ -1,8 +1,8 @@
 # Hello World, A link to the past
 
-In this installment we will examine the process of linking. In [hello world](../Hello_World/) we looked at the contents and format of an executable. Many of the contents of an executable are reserved for the process of linking. Thus linking is natural second topic. We will first look at static linking followed by dynamic linking. The end goal here is first to obviously understand this process, but secondly to answer our unanswered questions from the previous exercise. 
+In this installment we will examine the process of linking. In [hello world](../Hello_World/) we looked at the contents and format of an executable. Many of the contents of an executable are reserved for the process of linking. Thus linking is a natural second topic. We will first look at static linking followed by dynamic linking. The end goal here is first to obviously understand this process, but secondly to answer our unanswered questions from the previous exercise. 
 
-To highlight the process of linking we slightly complicated the classic hello world by placing the "hello world" string as global in a library accesed through an accesor function in the example library. The main entry point is contained in `exe.c` and this accesor is contained in `lib.c`.
+To highlight the process of linking we slightly complicated the classic hello world. We now have two C files, a library containting the "hello world" string as global and accesed through an accesor function. The main entry point is contained in `exe.c` and this accesor is contained in `lib.c`.
 
 ## What exactly is GCC doing?
 
@@ -260,6 +260,8 @@ Symbol table '.symtab' contains 17 entries:
 
 The first thing to note is that local variables do not populate into the symbol table. An `objdump` of `sym_0.o` shows that local variables are implemented by allocating stack space. Thus when on encounters a local statement `int x = 0;`, one should take this as telling the compiler to allocated 4 bytes on the stack and assign 0 to it.
 
+Next let us discuss what exactly a symbol table entry consists of and what a symbol table does at a high level. Below is the definition of a symbol table entry. The symbol table keeps track of all "symbols" defined in a file, their location within their respective section, their scope i.e. binding i.e. local vs global and finally the symbol's type (function and data, etc). To motivate why this must exist, consider our current hello world example. `exe.c` calls a function from `lib.c` to get a string to print. Now, each of these files are compiled seperately as they are different files and thus produce different ELF files each with their own sections. Thus in `exe.c` there is a reference to a function not defined. It'd be nice if somewhere in `exe.o` there was something to say "hey we got a function but don't know where to go to find it yet." Better yet, it'd be nice if in `lib.o` there was something saying "hey to anyone referncing this function we have it for you at this offset within this section of my ELF." This is one of the funcions of the symbol table.
+
 ```C
 typedef struct
 {
@@ -267,16 +269,33 @@ typedef struct
   unsigned char	st_info;		/* Symbol type and binding */
   unsigned char st_other;		/* Symbol visibility */
   Elf64_Section	st_shndx;		/* Section index */
-  Elf64_Addr	st_value;		/* Symbol value */
+  Elf64_Addr	st_value;		/* Symbol value (section offset of phys addr)*/
   Elf64_Xword	st_size;		/* Symbol size */
 } Elf64_Sym;
 ```
 
+Returning to our `sym_0.c` file we can make a few comments.
+* Inited global variables (`global_init`) get placed in the .data section and have a global binding indicating other files can freely reference these variables.
+* Uninited global vaiables (`global_uninit`) gets placed in a psdeuo section COM i.e. COMMON. This section is not actually phsically present, instead it let's the linker know that we have an uninited global variable. The linker will place this in the .bss section of the final executable but will throw an error if it finds an inited symbol of the same name.
+* Static inited global variables (`static_global_init`) get placed in the .data section. Note the value of this entry is 4 b/c this is the offset within the .data section one find this variable. Also note the LOCAL binding indicating this variables scope is limited to this file.
+* Static uninited global variables (`static_global_uninit`) get placed in the .bss section.
+* Functions get placed in the .text section.
+* Local static variables will get placed in .data or .bss based on inited or not. But key thing is that the compiler adds a postfix to the symbol name to make it unique. This is because two functions in the same file could use the same local static variable name, but these two variables do not refer to the same data.
+* Final point of clarification, the string table index stored in the symbol table entry indexed the .strtab section. The .shstrtab is the string table indexed by section table entries.
+
+### Symbol Resolution
+* weak bindings https://docs.oracle.com/cd/E19683-01/816-1386/chapter2-11/index.html
+* file and section types?
+
+### Other C Keywords
+
 * switch statements
 * what about like struct or enum definitions?
 * other c keywords
+
 * debug symbols -g section
-* Add point of clarification on shstrtab vs strtab
+* Why are some sections added to symbol table?
+
 
 ## Relocation? Static Libraries and archives?
 
