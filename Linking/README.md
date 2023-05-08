@@ -299,6 +299,7 @@ Static Libraries)
 * A static library is just a concatenation of relocatable object files
 * Use `ar` command line tool to create them from a colection of .o files
 * Allows one to have a collection of smaller relocatable files such that references to symbols in the static library do not add the entire library, just the relocatable file from which the symbol is in.
+* An example is included. `ar1.c`, `ar2.c`, `ar_main.c` can be used to explore this using the command line tools we have discussed thus far and is left to the reader.
 
 Ordering Matters)
 * Suppose we pass the linker a set of input files and archives.
@@ -328,11 +329,14 @@ Finally there is a notion of weak bindings that is discussed [here](https://docs
 ### Other C Keywords and addendums
 
 * switch statements
+  * `switch.c`
 * what about like struct or enum definitions?
 * other c keywords
 * debug symbols -g section
 
-## Relocation?
+## Relocation a static hello world??
+
+Use new hello world as guide
 
 ## Resources
 
