@@ -16,7 +16,7 @@ Input)
 #define STRING "Hello"
 char* string_ptr = STRING;
 
-int get_str() {
+char* get_str() {
   return string_ptr;
 }
 ```
@@ -330,13 +330,15 @@ Finally there is a notion of weak bindings that is discussed [here](https://docs
 
 * switch statements
   * `switch.c`
-* what about like struct or enum definitions?
-* other c keywords
+* what about struct or enum definitions?
+  * implicitly harded coded by compiled assembly, no symbol table entries
 * debug symbols -g section
+  * adds a whole lot of sections. Seems like a bit of a rabit whole.
+* Beware of impicit return type assumption of undefined functions (w/o signature). Erase the signature of `get_str` in `exe.c` and compare the assembly. HINT: `cltq`.s
 
-## Relocation a static hello world??
+## Relocation
 
-Use new hello world as guide
+In the previous section we looked at the symbol table and some rules the linker uses to resolve 
 
 ## Resources
 
