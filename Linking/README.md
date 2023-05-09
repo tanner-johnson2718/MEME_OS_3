@@ -338,7 +338,49 @@ Finally there is a notion of weak bindings that is discussed [here](https://docs
 
 ## Relocation
 
-In the previous section we looked at the symbol table and some rules the linker uses to resolve 
+In the previous section we looked at the symbol table and some rules the linker uses to resolve symbols. In this section we shall explore relocation, which is the step the linker must take to 1) merge object files into a single executable and 2) references in code to symbols with the proper location of those symbols final resting location in the executable.
+
+To explore this let us look at our complicated hello world with a few extras to exempify this process. Below is `exe.c` containing the hello world code and `lib.c` is mini library it access which was explored in the above sections.
+
+```C
+#include <stdio.h>
+
+int exe_gbl = 7;
+
+// lib.c references
+char* get_str();
+extern int lib_gbl;
+
+int main(int argc, char** argv) {
+    puts(get_str());
+
+    int ref1 = exe_gbl;
+    int ref2 = lib_gbl;
+    int ref3 = exe_gbl;
+
+    return 0;
+}
+```
+
+This hello world accesses a static (private) string from `lib.c` via its defined accessor and then for demonstration purposes access its global and a global from `lib.c`. References to symbols are populated in the relocation table i.e. the sections of type "RELA". We compile this code with `gcc -c exe.c` and output the relocation table data with `readelf -r exe.o`.
+
+```
+Relocation section '.rela.text' at offset 0x2b8 contains 5 entries:
+  Offset          Info           Type           Sym. Value    Sym. Name + Addend
+000000000019  000c00000004 R_X86_64_PLT32    0000000000000000 get_str - 4
+000000000021  000d00000004 R_X86_64_PLT32    0000000000000000 puts - 4
+000000000027  000900000002 R_X86_64_PC32     0000000000000000 exe_gbl - 4
+000000000030  000e00000002 R_X86_64_PC32     0000000000000000 lib_gbl - 4
+000000000039  000900000002 R_X86_64_PC32     0000000000000000 exe_gbl - 4
+
+Relocation section '.rela.eh_frame' at offset 0x330 contains 1 entry:
+  Offset          Info           Type           Sym. Value    Sym. Name + Addend
+000000000020  000200000002 R_X86_64_PC32     0000000000000000 .text + 0
+```
+
+We will ignore the `rela.eh_frame` section for now and focus on the `rela.txt` section. As we can see every reference to a symbol gets an entry even if its referencing the same symbol twice.
+
+
 
 ## Resources
 
