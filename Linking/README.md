@@ -399,7 +399,7 @@ But how did it compute this? First off by examining `exe` we can see that the .d
 * $L=0x1149$
 * So, $A=0x2EA0$?
 
-But in the assembly code we see the actual address $0x20E9C$
+But in the assembly code we see the actual address $0x2E9C$. Howeve there is one cavet. We need to add the "Addend" parameter found in relocation table entry. Since the instruction pointer points to the next instruction and the next instruction is 4 bytes after our 32bit PC relative address, we need to subtract 4 bytes from $A$ to get the correct address to substitute.
 
 
 
