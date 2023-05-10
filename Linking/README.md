@@ -392,7 +392,7 @@ Next let us turn our attention to the fully linked executable `exe`. The final P
 116e:	8b 05 9c 2e 00 00    	mov    0x2e9c(%rip),%eax        # 4010 <exe_gbl>
 ```
 
-But how did it compute this? First off by examining `exe` we can see that the .data sections of the two input object files have been merged and have runtime address. Thus our target symbol has a runtime address. Also the .text sections of the object files have been merged into one and we have an offset into the orginal `exe.o` .text section where are symbol reference resides. With all this we can compute the offset placed in the assembly code above. Let $S$ be the runtime address of the symbol after it is merged. Let $O$ be the offset of the symbol reference which comes from the relocation table. Let $L$ be the runtime address of where the `exe.o` .text section got loaded. So our final PC relative address $A$ is $A=S-(L+O). We can disasemble the final `exe` to get these values.
+But how did it compute this? First off by examining `exe` we can see that the .data sections of the two input object files have been merged and have runtime address. Thus our target symbol has a runtime address. Also the .text sections of the object files have been merged into one and we have an offset into the orginal `exe.o` .text section where are symbol reference resides. With all this we can compute the offset placed in the assembly code above. Let $S$ be the runtime address of the symbol after it is merged. Let $O$ be the offset of the symbol reference which comes from the relocation table. Let $L$ be the runtime address of where the `exe.o` .text section got loaded. So our final PC relative address $A$ is $A=S-(L+O)$. We can disasemble the final `exe` to get these values.
 
 * $S=0x4010$
 * $O=0x27$
@@ -403,7 +403,7 @@ But in the assembly code we see the actual address $0x2E9C$. Howeve there is one
 
 Thus we have shown the basics of relocation. 1) merge all appropiate symbols and 2) replace all refences to symbols found in the relocation table with their merged locations. However, we skipped over the two function relocation table entries, which brings us to our next topic the PLT or Procedural Linkage Table.
 
-## PLT
+## PLT and GOT
 
 
 
