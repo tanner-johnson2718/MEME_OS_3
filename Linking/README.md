@@ -378,7 +378,28 @@ Relocation section '.rela.eh_frame' at offset 0x330 contains 1 entry:
 000000000020  000200000002 R_X86_64_PC32     0000000000000000 .text + 0
 ```
 
-We will ignore the `rela.eh_frame` section for now and focus on the `rela.txt` section. As we can see every reference to a symbol gets an entry even if its referencing the same symbol twice.
+We will ignore the `rela.eh_frame` section for now and focus on the `rela.txt` section. As we can see every reference to a symbol gets an entry even if its referencing the same symbol twice. For now let us focus on the 3 global references. First thing to note is "Offset" points to the bytes within the instructuion to replace with the final location of the symbol. The info field contains the symbol table index in the top 4 bytes and the type in the lower. For these global references the type of relocation is a 32bit intruction relative pointer. Meaning the location will be relative to the intruction pointer value when it is executing the intruction containing the symbol reference. To make this concrete, lets look at the byte code for the first `exe_gbl` reference.
+
+```
+25:	8b 05 00 00 00 00    	mov    0x0(%rip),%eax        # 2b <main+0x2b>
+```
+
+The above is a mem to register mov indicated by the 0x8b opcode. The second byte is called a ModR/M ([see here](https://www.cs.uaf.edu/2016/fall/cs301/lecture/09_28_machinecode.html)). 0x05 indicates the next 4 bytes are an offset of %RIP and move into EAX. One thing to note as mentined above is the offset stored in the relocation table points to the 4 byte RIP relative address it needs to fill in. 
+
+Next let us turn our attention to the fully linked executable `exe`. The final PC relative instruction is the following:
+
+```
+116e:	8b 05 9c 2e 00 00    	mov    0x2e9c(%rip),%eax        # 4010 <exe_gbl>
+```
+
+But how did it compute this? First off by examining `exe` we can see that the .data sections of the two input object files have been merged and have runtime address. Thus our target symbol has a runtime address. Also the .text sections of the object files have been merged into one and we have an offset into the orginal `exe.o` .text section where are symbol reference resides. With all this we can compute the offset placed in the assembly code above. Let $S$ be the runtime address of the symbol after it is merged. Let $O$ be the offset of the symbol reference which comes from the relocation table. Let $L$ be the runtime address of where the `exe.o` .text section got loaded. So our final PC relative address $A$ is $A=S-(L+O). We can disasemble the final `exe` to get these values.
+
+* $S=0x4010$
+* $O=0x27$
+* $L=0x1149$
+* So, $A=0x2EA0$?
+
+But in the assembly code we see the actual address $0x20E9C$
 
 
 
