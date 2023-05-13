@@ -429,13 +429,15 @@ msg:
 Compile with `as min_hello.S -o min_hello.o && ld -o min_hello min_hello.o -s -n -N --verbose`. 
 
 `min_hello` layout)
-* 0x00 to 0x40  ->  ELF64 Header. Fixed Header Size
-* 0x40 to 0x78  ->  Program Headers. Singular Program header of 0x38 bytes.
-* 0x78 to 0x95  -> .text section. Write Syscall takes 3 args and calling `int` instruction requires another arg. We also call exit which may or may not be required. Assuming it is, this is a minimal instruction set to accomplish "hello world" from user space using syscall.
-* 0xa1 to 0xb8  ->  .shstrtab ... Strip this?
+* 0x00 to 0x040  ->  ELF64 Header. Fixed Header Size
+* 0x40 to 0x078  ->  Program Headers. Singular Program header of 0x38 bytes.
+* 0x78 to 0x095  -> .text section. Write Syscall takes 3 args and calling `int` instruction requires another arg. We also call exit which may or may not be required. Assuming it is, this is a minimal instruction set to accomplish "hello world" from user space using syscall.
+* 0xa1 to 0x0b8  ->  .shstrtab must be included
+* 0xb8 to 0x1b8  ->  section headers. 4 Sections at 64 bytes
 
+From the above layout we get an over alls size of 0x1b8 bytes or 440 bytes which is just about the smallest valid hello world ELF that one coul craft. We could maybe trim the .shstrtab, the exit sys call, we could use the ELF32 standard to trim a few bytes. However, this is minimal given certain reasonable constraints.
 
-
+We will go over interrupts and systemcalls in more detail later. However, the [resource](https://www.tutorialspoint.com/assembly_programming/assembly_system_calls.htm) has some good info on how the system call write was used above.
 
 ## Resources
 
