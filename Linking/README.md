@@ -403,7 +403,37 @@ But in the assembly code we see the actual address $0x2E9C$. Howeve there is one
 
 Thus we have shown the basics of relocation. 1) merge all appropiate symbols and 2) replace all refences to symbols found in the relocation table with their merged locations. However, we skipped over the two function relocation table entries, which brings us to our next topic the PLT or Procedural Linkage Table.
 
-## PLT and GOT
+## Exercise, Create a Minimal Hello World
+
+To be rigorious the goal is to minimize the ELF size of the final executable, while still writing the string "Hello World" to the terminal.
+
+**Solution**
+
+```
+.section .text
+.globl _start
+_start:
+    mov $4, %eax
+    mov $1, %ebx
+    mov $msg, %ecx
+    mov $12, %edx
+    int $0x80
+    mov $1, %eax
+    int $0x80
+
+.section .data
+msg:
+    .ascii "Hello World\n"
+```
+
+Compile with `as min_hello.S -o min_hello.o && ld -o min_hello min_hello.o -s -n -N --verbose`. 
+
+`min_hello` layout)
+* 0x00 to 0x40  ->  ELF64 Header. Fixed Header Size
+* 0x40 to 0x78  ->  Program Headers. Singular Program header of 0x38 bytes.
+* 0x78 to 0x95  -> .text section. Write Syscall takes 3 args and calling `int` instruction requires another arg. We also call exit which may or may not be required. Assuming it is, this is a minimal instruction set to accomplish "hello world" from user space using syscall.
+* 0xa1 to 0xb8  ->  .shstrtab ... Strip this?
+
 
 
 
