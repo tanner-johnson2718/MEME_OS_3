@@ -435,7 +435,7 @@ Compile with `as min_hello.S -o min_hello.o && ld -o min_hello min_hello.o -s -n
 * 0xa1 to 0x0b8  ->  .shstrtab must be included
 * 0xb8 to 0x1b8  ->  section headers. 4 Sections at 64 bytes
 
-From the above layout we get an over alls size of 0x1b8 bytes or 440 bytes which is just about the smallest valid hello world ELF that one coul craft. We could maybe trim the .shstrtab, the exit sys call, we could use the ELF32 standard to trim a few bytes. However, this is minimal given certain reasonable constraints.
+From the above layout we get an over alls size of 0x1b8 bytes or 440 bytes which is just about the smallest valid hello world ELF that one could craft. We could maybe trim the .shstrtab, the exit sys call, and we could use the ELF32 standard to trim a few bytes. However, this is minimal given certain reasonable constraints.
 
 We will go over interrupts and systemcalls in more detail later. However, the [resource](https://www.tutorialspoint.com/assembly_programming/assembly_system_calls.htm) has some good info on how the system call write was used above.
 
