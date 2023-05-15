@@ -36,5 +36,4 @@ To keep projected well bounded we will implace the following contraints)
 * Basic C and Linux Skills
 * Warm and Fuzzy for IO, files, process memory foot print, etc.
 * Linux System
-    * 
 * GDB 
