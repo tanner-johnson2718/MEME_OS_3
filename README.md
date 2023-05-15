@@ -24,6 +24,7 @@ To keep projected well bounded we will implace the following contraints)
 
 * [X] [Hello World, What did you give me?](./Hello_World/)
 * [X] [Hello World, A link to the past](./Linking/)
+* [ ] [Hello World, Sharing is Caring](./Dynamic_Linking)
 * [ ] [Hello World, What do you do?](./Loading/)
 * [ ] Heap Exploration (Malloc)
 * [ ] File IO
