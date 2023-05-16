@@ -4,17 +4,20 @@ In the previous installment we looked at dynamic linking and how globals are lin
 
 ## Exercise, Make your own Print Shared Library
 
+To start, let us make our own shared library. We will take our minimal hello world from the previous exercise, make it a shared library for putting a string on the terminal, and call it in a new hello world.
+
 * Create shared library using our minimal hello world
 * Create hello world calling it
 * Have side channel for seeing whats going on
 * https://opensource.com/article/22/5/dynamic-linking-modular-libraries-linux
 
-## ??
+## System Shared Libraries
 
 * PLT and GOT?
 * How do I see what shared libraries are currently resident in memory?
     * stdlib
     * libc
 * crt1.0?
+* When are these loaded on startup?
 
 ## Linker Script Clean up

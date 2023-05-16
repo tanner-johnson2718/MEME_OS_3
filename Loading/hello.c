@@ -1,6 +1,6 @@
-#include <stdio.h>
+void my_puts(char* in_str);
 
 int main(int argc, char** argv) {
-    printf("Hello World\n");
+    my_puts("Bra\n");
     return 0;
 }

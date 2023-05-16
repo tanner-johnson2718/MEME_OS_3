@@ -1,14 +1,14 @@
 .section .text
 .globl _start
 _start:
-    mov $4, %eax
-    mov $1, %ebx
-    mov $msg, %ecx
-    mov $12, %edx
+    mov $4, %rax
+    mov $1, %rbx
+    mov $msg, %rcx
+    mov $6, %rdx
     int $0x80
-    mov $1, %eax
+    mov $1, %rax
     int $0x80
 
 .section .data
 msg:
-    .ascii "Hello World\n"
+    .ascii "Test\n"
