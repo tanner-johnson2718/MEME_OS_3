@@ -4,11 +4,24 @@ In the previous installment we looked at dynamic linking and how globals are lin
 
 ## Exercise, Make your own Print Shared Library
 
-To start, let us make our own shared library. We will take our minimal hello world from the previous exercise, make it a shared library for putting a string on the terminal, and call it in a new hello world.
+To start, let us make our own shared library. We will take our minimal hello world from the previous exercise, make it a shared library for putting a string on the terminal, and call it in a new hello world. Our library function `my_puts()` is implemented in `my_puts.c`)
 
-* Create shared library using our minimal hello world
-* Create hello world calling it
-* Have side channel for seeing whats going on
+```C
+void my_write(int fd, char* buf, long len)
+{
+    asm("mov $1, %rax\n"
+        "syscall\n");
+}
+
+void my_puts(char* str, long len)
+{
+    my_write(1, str, len);
+}
+
+```
+
+It uses the [syscall](https://www.cs.uaf.edu/2017/fall/cs301/lecture/11_17_syscall.html) instruction to call the write system call on STDOUT. 
+
 * https://opensource.com/article/22/5/dynamic-linking-modular-libraries-linux
 
 ## System Shared Libraries
@@ -19,5 +32,6 @@ To start, let us make our own shared library. We will take our minimal hello wor
     * libc
 * crt1.0?
 * When are these loaded on startup?
+    * Or are they loaded on an as needed basis?
 
 ## Linker Script Clean up
