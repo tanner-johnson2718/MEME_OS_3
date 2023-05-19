@@ -1,4 +1,4 @@
-void my_puts(char* in_str, long len);
+#include <my_puts.h>
 
 int main(int argc, char** argv) {
     my_puts("Bra\n", 4);
