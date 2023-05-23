@@ -27,7 +27,7 @@ Now we compile this minimal hello world with the following two commands)
 * `gcc -fPIC -c my_puts.c -fno-asynchronous-unwind-tables`
     * `-fPIC` gives us PC relative addressing and is thus posistion independand
     * `-fno-asynchronous-unwind-tables` gets rid of the eh sections in the finally elf as we will not use them
-*` objcopy --remove-section=.note.gnu.property --remove-section=.note.GNU-stack --remove-section=.comment my_puts.o`.
+* `objcopy --remove-section=.note.gnu.property --remove-section=.note.GNU-stack --remove-section=.comment my_puts.o`.
     * This just strips some of the meta data so we have simplier output elf to analyze.
 
 This produces a rather simple ELF and assembly code. It exports a single global function `my_puts` to be linked with our main hello world.
@@ -36,7 +36,7 @@ This produces a rather simple ELF and assembly code. It exports a single global 
 
 * https://medium.com/@The_Mad_Zaafa/creating-and-using-dynamic-libraries-c-a9d344822ed0
 
-## What's in your .so? Do you know?
+## What's in your Object Files? Do you know?
 
 
 
@@ -51,5 +51,6 @@ This produces a rather simple ELF and assembly code. It exports a single global 
 * crt1.0?
 * When are these loaded on startup?
     * Or are they loaded on an as needed basis?
+    * Once loaded, how does it know where it is??
 
 ## Linker Script Clean up
