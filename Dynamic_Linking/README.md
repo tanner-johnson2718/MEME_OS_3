@@ -20,11 +20,14 @@ void my_puts(char* str, long len)
 
 ```
 
-It uses the [syscall](https://www.cs.uaf.edu/2017/fall/cs301/lecture/11_17_syscall.html) instruction to call the write system call on STDOUT. 
+It uses the [syscall](https://www.cs.uaf.edu/2017/fall/cs301/lecture/11_17_syscall.html) instruction to call the write system call on STDOUT. The literal 1 is placed into the `rax` register to tell the syscall intruction to do a write. The register calling convention for `syscall` is exactly the same for C functions, thus our `my_write` wrapper can simply keep the same arguements as a write system call and pass them through in the same registers.
 
-* https://opensource.com/article/22/5/dynamic-linking-modular-libraries-linux
+Now we compile this minimal hello world with `cc -fPIC -c my_puts.c -fno-asynchronous-unwind-tables &&
+	objcopy --remove-section=.note.gnu.property --remove-section=.note.GNU-stack --remove-section=.comment my_puts.o`.
 
-## Progromattic INterface
+* https://medium.com/@The_Mad_Zaafa/creating-and-using-dynamic-libraries-c-a9d344822ed0
+
+## Progromattic Interface
 
 ## System Shared Libraries
 
