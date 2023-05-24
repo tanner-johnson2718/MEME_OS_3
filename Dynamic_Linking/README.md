@@ -70,7 +70,7 @@ Now looking at are output file of my_hello. We see a few things. We see some new
 
 ## GOT and PLT
 
-To see how the GOT and PLT are used to achieve run time linking we create a new set of test files. `libGOT.c` contains a single global varible and 2 functions. One to increment it and one to dec it. Our test driver `got.c` will simply call this increment function 3 times.
+To see how the GOT and PLT are used to achieve run time linking we create a new set of test files. `libGOT.c` contains a single global varible and 2 functions. One to increment it and one to dec it. Our test driver `got.c` will simply call these functions 3 times each.
 
 `libGOT.c`:
 ```C
@@ -79,6 +79,11 @@ unsigned int counter = 0;
 void inc_counter()
 {
     counter++;
+}
+
+void dec_counter()
+{
+    counter--;
 }
 ```
 
