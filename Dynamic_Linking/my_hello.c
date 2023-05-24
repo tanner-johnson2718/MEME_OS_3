@@ -2,4 +2,9 @@
 
 void _start() {
     my_puts("Bra\n", 4);
+
+    asm(
+        "mov $60, %rax\n"
+        "syscall"
+    );
 }

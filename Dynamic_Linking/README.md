@@ -38,17 +38,51 @@ Now we want to turn this object module into a shared library object. We do this 
 
 * `.dynamic` is an array of [structures](https://docs.oracle.com/cd/E23824_01/html/819-0690/chapter6-42444.html) that index the various sections and important details of the file used in dynamic linking such as `.dynsym`, `.dynstr`, the GNU hash table, etc.
 
+Finally we can look at our actual hello world.
+
+```C
+#include <my_puts.h>
+
+void _start() {
+    my_puts("Bra\n", 4);
+
+    asm(
+        "mov $60, %rax\n"
+        "syscall"
+    );
+}
+```
+
+We compile this with `gcc -nostdlib -fno-asynchronous-unwind-tables -I . -L./ my_hello.c -lM -o test`. There are some caviets associated with this which we list below.
+
+* First the entry point is `_start` instead of `main`. This is because we are compiling without the standard library. The standard C library adds a wraper to our starting main code that handles input args, process exiting and clean up, etc. All processess by default start at the `_start` symbol (this is dictated by the linker).
+* `-I .`. This flag just looks for include files in our current dir.
+* `-L./`. Look for libraries in our current dir
+* `-lM`. Look for library of name "libM.so". The lib and .so pre and postfix are implicitly added.
+* One final gotcha is we mush add an envirmonet variable using the following command `export LD_LIBRARY_PATH=$PWD:$LD_LIBRARY_PATH`. This tells the linker to also look at our current directory for libraries at runtime.
+
+... Talk about new sections
+
+
+### Key resource
+
 * https://medium.com/@The_Mad_Zaafa/creating-and-using-dynamic-libraries-c-a9d344822ed0
 
-## What's in your Object Files? Do you know?
+## PLT and GOT
 
-
+* If I reference my_puts twoce, is there only a single reloction entry?
+    * SHould be right?
+* How are .data and .text sections always at some distance from each other??
+    * especially in shared libraries
+* Lazy binding
+* find addrs of .data and .text sections in example
+* Add code to look at physical addresses?
+* what happens when a second function calls into lib when the first ref. prog is still running 
 
 ## Progromattic Interface
 
 ## System Shared Libraries
 
-* PLT and GOT?
 * How do I see what shared libraries are currently resident in memory?
     * stdlib
     * libc
@@ -56,11 +90,7 @@ Now we want to turn this object module into a shared library object. We do this 
 * When are these loaded on startup?
     * Or are they loaded on an as needed basis?
     * Once loaded, how does it know where it is??
-* How are .data and .text sections always at some distance from each other??
-    * especially in shared libraries
-* Lazy binding
-* find addrs of .data and .text sections in example
-* Add code to look at physical addresses?
-* what happens when a second function calls into lib when the first ref. prog is still running 
+
+* why is _start the entry, is it loader or linker?
 
 ## Linker Script Clean up
