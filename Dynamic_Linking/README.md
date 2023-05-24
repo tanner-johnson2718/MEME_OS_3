@@ -30,7 +30,13 @@ Now we compile this minimal hello world with the following two commands)
 * `objcopy --remove-section=.note.gnu.property --remove-section=.note.GNU-stack --remove-section=.comment my_puts.o`.
     * This just strips some of the meta data so we have simplier output elf to analyze.
 
-This produces a rather simple ELF and assembly code. It exports a single global function `my_puts` to be linked with our main hello world.
+This produces a rather simple ELF and assembly code. It exports a single global function `my_puts` to be linked with our main hello world. It contains no relocation entries, an empty data section, and is just a symbol table and its assembly code.
+
+Now we want to turn this object module into a shared library object. We do this with the following: `gcc -shared -nostdlib -o libM.so my_puts.o`. The ker here is the `-shared` flag indicating we want to create a shared object. Note that by linux convention, shared libraries shard with "lib" and are suffixed with ".so". This ouputs a shared object file `libM.so`. Dumping the ELF we see a few new sections we have not analyzed in depth yet. These are the `.dynsym`, `.dynstr`, and `.dynamic` sections.
+
+* `.dynsym` + `.dynstr`) These serve the exact same purpose as the symbol table (and symbol string table) as explored in static linking. In this case, the dynamic symbol table of libM.so only contains an entry for `my_puts`, gives its offset into the ELF, and gives the usual meta data. Note here on key difference between the symbol table and its dynamic conuter part is the dynamic symbol table actually gets loaded into memory, where as the base symbol table is only stored in the file. This is obviously a key distinction as we need resolve these symbols at run time. Just as in static linking, objects that reference `my_puts` will get an undefined symbol to `my_puts` in their respective dynamic symbol table.
+
+* 
 
 
 
@@ -52,5 +58,11 @@ This produces a rather simple ELF and assembly code. It exports a single global 
 * When are these loaded on startup?
     * Or are they loaded on an as needed basis?
     * Once loaded, how does it know where it is??
+* How are .data and .text sections always at some distance from each other??
+    * especially in shared libraries
+* Lazy binding
+* find addrs of .data and .text sections in example
+* Add code to look at physical addresses?
+* what happens when a second function calls into lib when the first ref. prog is still running 
 
 ## Linker Script Clean up
