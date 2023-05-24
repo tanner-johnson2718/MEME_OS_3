@@ -36,9 +36,7 @@ Now we want to turn this object module into a shared library object. We do this 
 
 * `.dynsym` + `.dynstr`) These serve the exact same purpose as the symbol table (and symbol string table) as explored in static linking. In this case, the dynamic symbol table of libM.so only contains an entry for `my_puts`, gives its offset into the ELF, and gives the usual meta data. Note here on key difference between the symbol table and its dynamic conuter part is the dynamic symbol table actually gets loaded into memory, where as the base symbol table is only stored in the file. This is obviously a key distinction as we need resolve these symbols at run time. Just as in static linking, objects that reference `my_puts` will get an undefined symbol to `my_puts` in their respective dynamic symbol table.
 
-* 
-
-
+* `.dynamic` is an array of [structures](https://docs.oracle.com/cd/E23824_01/html/819-0690/chapter6-42444.html) that index the various sections and important details of the file used in dynamic linking such as `.dynsym`, `.dynstr`, the GNU hash table, etc.
 
 * https://medium.com/@The_Mad_Zaafa/creating-and-using-dynamic-libraries-c-a9d344822ed0
 
