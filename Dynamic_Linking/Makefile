@@ -8,7 +8,11 @@ my_lib: my_puts
 my_hello: my_hello.c my_lib
 	gcc -nostdlib -fno-asynchronous-unwind-tables -I . -L./ my_hello.c -lM -o test
 
+libGOT: libGOT.c
+	gcc -shared -nostdlib -fPIC -fno-asynchronous-unwind-tables -o libGOT.so libGOT.c
 
+got: libGOT got.c
+	gcc -nostdlib -fno-asynchronous-unwind-tables -I . -L./ got.c -lGOT -o got 
 
 clean:
 	rm -rf *o test *.so

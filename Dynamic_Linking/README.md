@@ -68,9 +68,9 @@ Now looking at are output file of my_hello. We see a few things. We see some new
 
 * https://medium.com/@The_Mad_Zaafa/creating-and-using-dynamic-libraries-c-a9d344822ed0
 
-## GOT, PLT, and Lazy Binding
+## GOT and PLT
 
-To see how the GOT and PLT are used to achieve run time linking we create a new set of test files. `libGOT.c` contains a single global varible and a function to increment it. Our test driver `got.c` will simply call this increment function 3 times.
+To see how the GOT and PLT are used to achieve run time linking we create a new set of test files. `libGOT.c` contains a single global varible and 2 functions. One to increment it and one to dec it. Our test driver `got.c` will simply call this increment function 3 times.
 
 `libGOT.c`:
 ```C
@@ -85,34 +85,59 @@ void inc_counter()
 `got.c`:
 ```C
 void inc_counter();
+void dec_counter();
 
 void _start()
 {
     inc_counter();
     inc_counter();
     inc_counter();
+    dec_counter();
+    dec_counter();
+    dec_counter();
 }
 ```
 
-We compile this library and test driver as we did in the `my_puts` and `my_hello` example shown in the previous section. 
+We compile this library and test driver as we did in the `my_puts` and `my_hello` example shown in the previous section. Let us now do a binary analysis on the output elf `got`. Since we know we are looking at linking and we know there are two symbols, `inc_counter` and `dec_counter` that need to be resolved lets start with the relocation table.
 
+`.rela.plt`:
+```
+Relocation section '.rela.plt' at offset 0x3d8 contains 2 entries:
+    Offset             Info             Type               Symbol's Value  Symbol's Name + Addend
+0000000000002ff0  0000000100000007 R_X86_64_JUMP_SLOT     0000000000000000 dec_counter + 0
+0000000000002ff8  0000000200000007 R_X86_64_JUMP_SLOT     0000000000000000 inc_counter + 0
+```
 
-### Questions
-* If I reference my_puts twoce, is there only a single reloction entry?
-    * SHould be right?
-* How are .data and .text sections always at some distance from each other??
-    * especially in shared libraries
-* Lazy binding
-* find addrs of .data and .text sections in example
-* Add code to look at physical addresses?
-* what happens when a second function calls into lib when the first ref. prog is still running 
+The first thing to note is that unlike static linking, despite calling each function 3 times, there is only a single relocation entry per function. The relocations point to the section GOT and not into the code as in the previous example. Also the index of the symbol to relocate is its index in the dynamic symbol table not the OG symbol table. 
 
+Next lets look at a single call to one of these functions and look at the contents of the `.plt.sec` section.
+
+```
+105d:	e8 de ff ff ff       	callq  1040 <inc_counter@plt>
+```
+```
+000000000001040 <inc_counter@plt>:
+    1040:	f3 0f 1e fa          	endbr64 
+    1044:	f2 ff 25 ad 1f 00 00 	bnd jmpq *0x1fad(%rip)        # 2ff8 <inc_counter>
+    104b:	0f 1f 44 00 00       	nopl   0x0(%rax,%rax,1)
+```
+
+We can see that the compiler has implemented calls to the library function `inc_conunter` by calling a wrapper function in the `.plt.sec`. This wrapper function in turn jumps to an address stored in the GOT section. This is the same address pointed to by the relocation entry. Thus we can deduce how dynamic linking works from looking at the above. When calling a shared library function, the compiler allocates a table to contain addresses of there final resting location in memory. This is the GOT. The compiler also generates "wrapper" functions such that all calls to these functions are implemented by function calls into the wrapper functions. This is the PLT. Finally the compiler generates relocation entries for the addresses in the GOT to updated at runtime.
+
+We should now have a warm and fuzzy for the GOT and the PLT. However as always there are some caviats. First we can see there is a new section we failed to look at in this example. That is the `.plt` section. And its core purpose is to aid in a process called Lazy binding. Secondly, we failed to explore shared libraries key property. That is the use case of multiple user programs sharing the same library. This is what we will explore in the next exercise.
 
 ### Key Resources
 
 * [CSAPP 7.12](../Computer%20Systems%20A%20Programmers%20Perspective%20(3rd).pdf)
 
-## Progromattic Interface
+## Exercise, Lazy Binding and Physcial Addresses 
+
+* Lazy binding
+* what happens when a second function calls into lib when the first ref. prog is still running
+    * find addrs of .data and .text sections in example
+    * Add code to look at physical addresses?
+    * How is .text section copied only once, but .data section copied per use?
+
 
 ## System Shared Libraries
 
@@ -126,4 +151,4 @@ We compile this library and test driver as we did in the `my_puts` and `my_hello
 
 * why is _start the entry, is it loader or linker?
 
-## Linker Script Clean up
+## Linker Script Clean up 
