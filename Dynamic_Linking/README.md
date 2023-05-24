@@ -60,16 +60,44 @@ We compile this with `gcc -nostdlib -fno-asynchronous-unwind-tables -I . -L./ my
 * `-L./`. Look for libraries in our current dir
 * `-lM`. Look for library of name "libM.so". The lib and .so pre and postfix are implicitly added.
 * One final gotcha is we mush add an envirmonet variable using the following command `export LD_LIBRARY_PATH=$PWD:$LD_LIBRARY_PATH`. This tells the linker to also look at our current directory for libraries at runtime.
+* Finally, we must call an exit syscall "manually" using the syscall instruction as this clean up is usually done by the C standard library.
 
-... Talk about new sections
+Now looking at are output file of my_hello. We see a few things. We see some new sections, some new symbols, and a singular relocation entry. All these new entities in our ELF are associated with dynamic linking. More specificlly they are associated with two structures called the Global Offset Table (GOT) and Procedural Linkage table (PLT). We will cover this in depth next section and thus will conclude this exercise here.
 
-
-### Key resource
+### Key Resources
 
 * https://medium.com/@The_Mad_Zaafa/creating-and-using-dynamic-libraries-c-a9d344822ed0
 
-## PLT and GOT
+## GOT, PLT, and Lazy Binding
 
+To see how the GOT and PLT are used to achieve run time linking we create a new set of test files. `libGOT.c` contains a single global varible and a function to increment it. Our test driver `got.c` will simply call this increment function 3 times.
+
+`libGOT.c`:
+```C
+unsigned int counter = 0;
+
+void inc_counter()
+{
+    counter++;
+}
+```
+
+`got.c`:
+```C
+void inc_counter();
+
+void _start()
+{
+    inc_counter();
+    inc_counter();
+    inc_counter();
+}
+```
+
+We compile this library and test driver as we did in the `my_puts` and `my_hello` example shown in the previous section. 
+
+
+### Questions
 * If I reference my_puts twoce, is there only a single reloction entry?
     * SHould be right?
 * How are .data and .text sections always at some distance from each other??
@@ -78,6 +106,11 @@ We compile this with `gcc -nostdlib -fno-asynchronous-unwind-tables -I . -L./ my
 * find addrs of .data and .text sections in example
 * Add code to look at physical addresses?
 * what happens when a second function calls into lib when the first ref. prog is still running 
+
+
+### Key Resources
+
+* [CSAPP 7.12](../Computer%20Systems%20A%20Programmers%20Perspective%20(3rd).pdf)
 
 ## Progromattic Interface
 
