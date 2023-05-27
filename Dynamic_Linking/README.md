@@ -135,7 +135,7 @@ We should now have a warm and fuzzy for the GOT and the PLT. However as always t
 
 * [CSAPP 7.12](../Computer%20Systems%20A%20Programmers%20Perspective%20(3rd).pdf)
 
-## Exercise, Lazy Binding and Physcial Addresses 
+## Exercise, Lazy Binding and Physcial Addresses
 
 * Lazy binding
 * what happens when a second function calls into lib when the first ref. prog is still running

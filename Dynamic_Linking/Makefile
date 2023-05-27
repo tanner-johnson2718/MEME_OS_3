@@ -12,7 +12,10 @@ libGOT: libGOT.c
 	gcc -shared -nostdlib -fPIC -fno-asynchronous-unwind-tables -o libGOT.so libGOT.c
 
 got: libGOT got.c
-	gcc -nostdlib -fno-asynchronous-unwind-tables -I . -L./ got.c -lGOT -o got 
+	gcc -nostdlib -fno-asynchronous-unwind-tables -I . -L./ got.c -lGOT -o got
+
+lazy: lazy.c my_lib libGOT
+	gcc -nostdlib -fno-asynchronous-unwind-tables -z lazy -I . -L./ lazy.c -lM -lGOT -o lazy
 
 clean:
-	rm -rf *o test *.so
+	rm -rf *o test *.so lazy
