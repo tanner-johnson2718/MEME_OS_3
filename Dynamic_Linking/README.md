@@ -144,21 +144,22 @@ We have a C file, `lazy.c`. Its goal is simple. Print the contents of the GOT, c
 * Call a shared library function in my code, call it `func()`.
 * Compiler generates a wrapper called `func@plt`
     * This function is placed in special section before the code section
+    * All calls to our library funtion, call this wrapper instead
     * It jumps to an address stored in the GOT
     * Every function call or library global gets a dedicated index in the GOT
-    * This address storef in the GOT is updated at runtime
+    * This address stored in the GOT is updated at runtime
 * We run our exe
-* The .dynsym table and .rela.plt sections are loaded into memory
+* The .dynsym table, .rela.plt, and other dynamic sections are loaded into memory
     * This gives us the required meta data to resolve dynamic symbols
 * We call the library function
-* The address in its GOT is called
-    * This is NOT the address of the function
+* The address in its GOT is called (through the plt wrapper)
+    * This is NOT the address of the function at first call
     * Instead the dynamic linker is invoked
 * ??? weridness happens and the GOT entry is replaced with the address of the func in mem
     * We look at this in more detal next.
 * Subsequent calls now point directly to function in the library resident in memory.
 
-So let's take a look at this in action. In `lazy.c` we implement this but with the constaint that is must be rip relative addressing and must not use the standard library. This requires some extra work to print pointers but simplifies the end binary for easier analsys. The function to access the GOT is shown below.
+So let's take a look at this in action. In `lazy.c` we implement this but with the constraint that it must be `%rip` relative addressing and must not use the standard library. This requires some extra work to print pointers but simplifies the end binary for easier analsys. The function to access the GOT is shown below.
 
 ```C
 // Accsesor function to get address off the GOT in mem. Note must use PIC or
@@ -175,9 +176,9 @@ u64 getGOT(u32 i)
 }
 ```
 
-Its a rather simple piece of assembly. Compute the address of the GOT relative to the pointer. Add the byte index. Clean up the stack. Return the computed address. The first point of confusion is the `lea` instruction. If one uses a `mov` intruction it will move the value of the first entry of the into `rsi`. Using `lea` allows us to compute the address that would be accessed with a move and store it in the target register. Finally the stack clean up is a bit weird, because the boiler plate stack preamble is done for us, but since we return ourself we must do the clean up.
+Its a rather simple piece of assembly. Compute the address of the GOT relative to the instruction pointer. Add the byte index. Clean up the stack. Return the computed address. The first point of confusion is the `lea` instruction. If one uses a `mov` intruction it will move the value of the first entry of the GOT into `%rsi`. Using `lea` allows us to compute the address that would be accessed with a move and store it in the target register. Finally the stack clean up is a bit weird, because the boiler plate stack preamble is done for us, but since we return ourself we must do the clean up ourselves as well.
 
-Now in our `_start` entry point we call a helper `printGOT` which calls the above `getGOT`, access the addresses returned, and prints the output cleanly to the terminal. We then call our library function `inc_coutner` and dumpe the GOT one more time. This produces the following output.
+Now in our `_start` entry point we call a helper `printGOT` which calls the above `getGOT`, access the addresses returned, and prints the output cleanly to the terminal. We then call our library function `inc_coutner` and dump the GOT one more time. This produces the following output.
 
 ```
 | GOT[0] | 0x5625ade28000 | 0x3ed0 |                // <- .dynamic
@@ -186,12 +187,21 @@ Now in our `_start` entry point we call a helper `printGOT` which calls the abov
 | GOT[3] | 0x5625ade28018 | 0x5625ade25010 |        // <- inc_counter
 | GOT[4] | 0x5625ade28020 | 0x7fcbbde0d01f |        // <- my_puts
 
+// ... inc_counter() is called ...
+
 | GOT[0] | 0x5625ade28000 | 0x3ed0 |                // <- .dynamic
 | GOT[1] | 0x5625ade28008 | 0x7fcbbde40190 |        // <- relo entries
 | GOT[2] | 0x5625ade28010 | 0x7fcbbde29af0 |        // <- dynamic linker
 | GOT[3] | 0x5625ade28018 | 0x7fcbbde09000 |        // <- inc_counter (updated)
 | GOT[4] | 0x5625ade28020 | 0x7fcbbde0d01f |        // <- my_puts
 ```
+We can see from the above that the inc_counter GOT entry initially points somewhere in memory (where? see next section). We call it and its entry is updated. The values of the first 3 entries in the GOT are reserved as shown above. As a final caviat, we had to force the gcc to use lazy binding the `-z lazy` flag. gcc appears to have logic that if the number of functions to dynamically bind is low, it simply resolves them at start up. The gcc call that compiles `lazy` is shown below.
+
+```
+gcc -nostdlib -fno-asynchronous-unwind-tables -z lazy -I . -L./ lazy.c -lM -lGOT -o lazy
+```
+
+The `-lM` is to link our `my_puts` library and the rest as been covered previously. Thus in this exercise we saw how dynamic linking works to update this PLT entries at run time. In the next section we look at the mystery step of how the dynamic linker is invoked and how it specifically updates the GOT entry of shared library calls.
 
 ### .plt Section in Lazy Binding
 
