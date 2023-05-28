@@ -203,7 +203,49 @@ gcc -nostdlib -fno-asynchronous-unwind-tables -z lazy -I . -L./ lazy.c -lM -lGOT
 
 The `-lM` is to link our `my_puts` library and the rest as been covered previously. Thus in this exercise we saw how dynamic linking works to update this PLT entries at run time. In the next section we look at the mystery step of how the dynamic linker is invoked and how it specifically updates the GOT entry of shared library calls.
 
-### .plt Section in Lazy Binding
+### .plt Section and Runtime Symbol Resolution
+
+Our goal here is to see what happens during the first invocation of `inc_counter`. We will used gdb to do this. We will cover gdb more in depth in the next installment but for now we will simply show you the results. We also want to see what is going in the .plt section of elf.
+
+* Launch gdb) `gdb lazy`
+* Set breakpoint at start and lib fun) `b _start` and `b inc_counter`
+* `r` to run util breakpoint
+* Type `lay next` until we get a register and assembly split screen
+* Type `ni` to step instructions, stepping over functions
+* When you reach the first call to `inc_counter` use `si` to step into the function
+* We get the following call stack
+    * `_start`
+    * `inc_counter@plt`
+    * `.plt + 0x10` (GOT[3], `inc_counters GOT,  points here initially)
+    * push 0 onto stack (.rela.plt index of `inc_counter`)
+    * `.plt`
+    * push GOT[1] onto stack
+        * relocation table address
+    * Now we appear to be in the dynamic linker
+    * After being lost in the dynamic linker we end up with the GOT entry for `inc_counter` updated and we end up executing in this function.
+
+Thus from executing the above and looking at the output of our `lazy` application we can see what thit `.plt` section is doing:
+
+```
+0000000000001000 <.plt>:
+    1000:	ff 35 02 30 00 00    	pushq  0x3002(%rip)        # 4008 <_GLOBAL_OFFSET_TABLE_+0x8>
+    1006:	f2 ff 25 03 30 00 00 	bnd jmpq *0x3003(%rip)        # 4010 <_GLOBAL_OFFSET_TABLE_+0x10>
+    100d:	0f 1f 00             	nopl   (%rax)
+    1010:	f3 0f 1e fa          	endbr64 
+    1014:	68 00 00 00 00       	pushq  $0x0
+    1019:	f2 e9 e1 ff ff ff    	bnd jmpq 1000 <.plt>
+    101f:	90                   	nop
+    1020:	f3 0f 1e fa          	endbr64 
+    1024:	68 01 00 00 00       	pushq  $0x1
+    1029:	f2 e9 d1 ff ff ff    	bnd jmpq 1000 <.plt>
+    102f:	90                   	nop
+```
+
+Call `inc_counter` -> Resolves to `inc_counter@plt` -> Jump through GOT[3] -> Points to .plt+0x10 -> .plt -> Jump through GOT[2]. During this call stack, the index and address of the relocation entry for the target function are pushed onto the stack. This gives the linker what it needs to resolve and update our GOT entry.
+
+This just about concludes the topic of dynamic linking. We have seen how the compiler sets up an exe with the GOT and PLT such that at all functions called in a shared library point to a wrapper function at compile time. Every such function gets this wrapper in `.plt.sec`. Every function also gets a relocation entry pointing to the GOT which will contain the resultant address when loaded. The first few entries of the GOT contain the address of the dynamic linker (presumably updated when a program starts up) and the address of the relocation table (known prior to runtime). The GOT entry of this function at first contains the addres of its PLT entry. Its PLT entry is code that pushes its relocation table index onto the stack then jumps to PLT[0]. This entry is code that pushes the relocation table addr onto the stack and invokes the dynamic linker. Finally the dynamic linker updates the GOT entry of the function, calls the function, and all subsequent calls skip all this nonsense and just execute the function in memory.
+
+### Physical Addresses and Multiple Users
 
 * Physical addrs
 * Multiple instances
