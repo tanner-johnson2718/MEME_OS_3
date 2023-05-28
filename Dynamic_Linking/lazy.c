@@ -76,8 +76,8 @@ u32 ptr_to_hex_str(u64 ptr, char* out)
 // GOT helpers
 // ============================================================================
 
-// Accsesor function to get address of the GOT in mem. Note must use PIC or
-// %rip relative addressing.
+// Accsesor function to get address off the GOT in mem. Note must use PIC or
+// %rip relative addressing. Also not index i is a byte index.
 u64 getGOT(u32 i)
 {
     asm(
@@ -193,7 +193,6 @@ void _start()
     print_GOT();
     inc_counter();
     print_GOT();
-    inc_counter();
 
 
     my_exit();

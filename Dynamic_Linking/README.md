@@ -137,11 +137,68 @@ We should now have a warm and fuzzy for the GOT and the PLT. However as always t
 
 ## Exercise, Lazy Binding and Physcial Addresses
 
-* Lazy binding
-* what happens when a second function calls into lib when the first ref. prog is still running
-    * find addrs of .data and .text sections in example
-    * Add code to look at physical addresses?
-    * How is .text section copied only once, but .data section copied per use?
+### Lazy Binding
+
+We have a C file, `lazy.c`. Its goal is simple. Print the contents of the GOT, call a library function, `inc_counter`, then look at the GOT one more time. This is too exemplify the process of lazy binding. This process defers the loading and mapping of shared libraries until they are called. It looks something like this:
+
+* Call a shared library function in my code, call it `func()`.
+* Compiler generates a wrapper called `func@plt`
+    * This function is placed in special section before the code section
+    * It jumps to an address stored in the GOT
+    * Every function call or library global gets a dedicated index in the GOT
+    * This address storef in the GOT is updated at runtime
+* We run our exe
+* The .dynsym table and .rela.plt sections are loaded into memory
+    * This gives us the required meta data to resolve dynamic symbols
+* We call the library function
+* The address in its GOT is called
+    * This is NOT the address of the function
+    * Instead the dynamic linker is invoked
+* ??? weridness happens and the GOT entry is replaced with the address of the func in mem
+    * We look at this in more detal next.
+* Subsequent calls now point directly to function in the library resident in memory.
+
+So let's take a look at this in action. In `lazy.c` we implement this but with the constaint that is must be rip relative addressing and must not use the standard library. This requires some extra work to print pointers but simplifies the end binary for easier analsys. The function to access the GOT is shown below.
+
+```C
+// Accsesor function to get address off the GOT in mem. Note must use PIC or
+// %rip relative addressing. Also not index i is a byte index.
+u64 getGOT(u32 i)
+{
+    asm(
+        "lea _GLOBAL_OFFSET_TABLE_(%rip), %rsi\n"
+        "add %rsi, %rdi\n"
+        "mov %rdi, %rax\n"
+        "pop %rbp\n"
+        "ret\n"
+    );
+}
+```
+
+Its a rather simple piece of assembly. Compute the address of the GOT relative to the pointer. Add the byte index. Clean up the stack. Return the computed address. The first point of confusion is the `lea` instruction. If one uses a `mov` intruction it will move the value of the first entry of the into `rsi`. Using `lea` allows us to compute the address that would be accessed with a move and store it in the target register. Finally the stack clean up is a bit weird, because the boiler plate stack preamble is done for us, but since we return ourself we must do the clean up.
+
+Now in our `_start` entry point we call a helper `printGOT` which calls the above `getGOT`, access the addresses returned, and prints the output cleanly to the terminal. We then call our library function `inc_coutner` and dumpe the GOT one more time. This produces the following output.
+
+```
+| GOT[0] | 0x5625ade28000 | 0x3ed0 |                // <- .dynamic
+| GOT[1] | 0x5625ade28008 | 0x7fcbbde40190 |        // <- relo entries
+| GOT[2] | 0x5625ade28010 | 0x7fcbbde29af0 |        // <- dynamic linker
+| GOT[3] | 0x5625ade28018 | 0x5625ade25010 |        // <- inc_counter
+| GOT[4] | 0x5625ade28020 | 0x7fcbbde0d01f |        // <- my_puts
+
+| GOT[0] | 0x5625ade28000 | 0x3ed0 |                // <- .dynamic
+| GOT[1] | 0x5625ade28008 | 0x7fcbbde40190 |        // <- relo entries
+| GOT[2] | 0x5625ade28010 | 0x7fcbbde29af0 |        // <- dynamic linker
+| GOT[3] | 0x5625ade28018 | 0x7fcbbde09000 |        // <- inc_counter (updated)
+| GOT[4] | 0x5625ade28020 | 0x7fcbbde0d01f |        // <- my_puts
+```
+
+### .plt Section in Lazy Binding
+
+* Physical addrs
+* Multiple instances
+* .plt section.
+* .data sections of shared libraries getting duplicated
 
 
 ## System Shared Libraries
