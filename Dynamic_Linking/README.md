@@ -247,7 +247,9 @@ This just about concludes the topic of dynamic linking. We have seen how the com
 
 ### Physical Addresses and Multiple Users
 
-To conclude our look at dynamic linking, lets look at its one key useful property. Sharing a single chunk code resident in memory between multiple 
+To conclude our look at dynamic linking, lets look at its one key useful property. Sharing a single chunk of code resident in memory between multiple programs. To explore this we add a little code at the end of `lazy.c`. We add a system call to print its PID and we a do a read system call on the STDIN fd so that the program does not exit until we enter a key stroke into the terminal. 
+
+We run two instances of `lazy`. In linux, the procfs system interface can be used to dump the virtual pages of a process. This is done with `cat /proc/<pid>/maps`. We then make use of a program `virt_to_phys` ([code taken from here](https://stackoverflow.com/questions/5748492/is-there-any-api-for-determining-the-physical-address-from-virtual-address-in-li)) to convert the pages of each process that are associated with `libGOT` into physical addresses. Finally we can compare and see what pages each process shares and what parts of libGOT are not shared. Note, we will cover topics such as virual memory, procfs, files, etc in more detail at later timer. For now, focus on using these concepts to highlight how libGOT gets shared and what sections do not get shared.
 
 
 **Proc 1**
@@ -310,8 +312,11 @@ Program Headers:
    09     .dynamic .got 
 ```
 
+We can see from the above that the 4 load segmenets found in the `libGOT.so` library correspond with the 4 pages found in each processes virtual. Moreover, we see a key pattern. The first two pages / segments are shared, the last two get copied such that each process gets its own unique copy. Now from the Section to Segment mapping we can see that its things such as meta data, the symbol table, and most importantly the code that gets shared. The data sections and GOT are copied. This makes sense. We want to reuse the code, however, each invocation of a shared library should result in a seperate data section. My program using some shared library should not mess with the state of your program using the same shared library. 
 
-## System Shared Libraries
+## Clean Up
+
+### System Shared Libraries
 
 * How do I see what shared libraries are currently resident in memory?
     * stdlib
@@ -323,4 +328,6 @@ Program Headers:
 
 * why is _start the entry, is it loader or linker?
 
-## Linker Script Clean up 
+### Linker Script Clean up 
+
+### Conclusion
