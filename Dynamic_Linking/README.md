@@ -281,7 +281,34 @@ To conclude our look at dynamic linking, lets look at its one key useful propert
     * 0x7f2355655000   ->   0x1aa5de000
     * 0x7f2355656000   ->   0x24a351000
 
+**libGOT.so Program Headers**
+```
+Program Headers:
+  Type           Offset   VirtAddr           PhysAddr           FileSiz  MemSiz   Flg Align
+  LOAD           0x000000 0x0000000000000000 0x0000000000000000 0x000380 0x000380 R   0x1000
+  LOAD           0x001000 0x0000000000001000 0x0000000000001000 0x000040 0x000040 R E 0x1000
+  LOAD           0x002000 0x0000000000002000 0x0000000000002000 0x000000 0x000000 R   0x1000
+  LOAD           0x002f18 0x0000000000002f18 0x0000000000002f18 0x000100 0x000108 RW  0x1000
+  DYNAMIC        0x002f18 0x0000000000002f18 0x0000000000002f18 0x0000e0 0x0000e0 RW  0x8
+  NOTE           0x000270 0x0000000000000270 0x0000000000000270 0x000020 0x000020 R   0x8
+  NOTE           0x000290 0x0000000000000290 0x0000000000000290 0x000024 0x000024 R   0x4
+  GNU_PROPERTY   0x000270 0x0000000000000270 0x0000000000000270 0x000020 0x000020 R   0x8
+  GNU_STACK      0x000000 0x0000000000000000 0x0000000000000000 0x000000 0x000000 RW  0x10
+  GNU_RELRO      0x002f18 0x0000000000002f18 0x0000000000002f18 0x0000e8 0x0000e8 R   0x1
 
+ Section to Segment mapping:
+  Segment Sections...
+   00     .note.gnu.property .note.gnu.build-id .gnu.hash .dynsym .dynstr .rela.dyn 
+   01     .text 
+   02     .eh_frame 
+   03     .dynamic .got .got.plt .bss 
+   04     .dynamic 
+   05     .note.gnu.property 
+   06     .note.gnu.build-id 
+   07     .note.gnu.property 
+   08     
+   09     .dynamic .got 
+```
 
 
 ## System Shared Libraries
