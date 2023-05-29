@@ -254,10 +254,10 @@ To conclude our look at dynamic linking, lets look at its one key useful propert
 * PID = 1044641
 * Lib GOT Virt Pages:
 ```
-7f476cc30000-7f476cc31000 r--p 00000000 08:02 8787599                    /home/tanner/Desktop/MEME_OS_3/Dynamic_Linking/libGOT.so
-7f476cc31000-7f476cc32000 r-xp 00001000 08:02 8787599                    /home/tanner/Desktop/MEME_OS_3/Dynamic_Linking/libGOT.so
-7f476cc32000-7f476cc33000 r--p 00002000 08:02 8787599                    /home/tanner/Desktop/MEME_OS_3/Dynamic_Linking/libGOT.so
-7f476cc33000-7f476cc34000 rw-p 00003000 08:02 8787599                    /home/tanner/Desktop/MEME_OS_3/Dynamic_Linking/libGOT.so
+7f476cc30000-7f476cc31000 r--p 00000000 08:02 8787599          /home/.../libGOT.so
+7f476cc31000-7f476cc32000 r-xp 00001000 08:02 8787599          /home/.../libGOT.so
+7f476cc32000-7f476cc33000 r--p 00002000 08:02 8787599          /home/.../libGOT.so
+7f476cc33000-7f476cc34000 rw-p 00003000 08:02 8787599          /home/.../libGOT.so
 ```
 * Physical Page Mapping)
     * 0x7f476cc30000   ->   0x2b932000
@@ -270,10 +270,10 @@ To conclude our look at dynamic linking, lets look at its one key useful propert
 * PID = 1045109
 * Lib GOT Virt Pages:
 ```
-7f2355653000-7f2355654000 r--p 00000000 08:02 8787599                    /home/tanner/Desktop/MEME_OS_3/Dynamic_Linking/libGOT.so
-7f2355654000-7f2355655000 r-xp 00001000 08:02 8787599                    /home/tanner/Desktop/MEME_OS_3/Dynamic_Linking/libGOT.so
-7f2355655000-7f2355656000 r--p 00002000 08:02 8787599                    /home/tanner/Desktop/MEME_OS_3/Dynamic_Linking/libGOT.so
-7f2355656000-7f2355657000 rw-p 00003000 08:02 8787599                    /home/tanner/Desktop/MEME_OS_3/Dynamic_Linking/libGOT.so
+7f2355653000-7f2355654000 r--p 00000000 08:02 8787599          /home/.../libGOT.so
+7f2355654000-7f2355655000 r-xp 00001000 08:02 8787599          /home/.../libGOT.so
+7f2355655000-7f2355656000 r--p 00002000 08:02 8787599          /home/.../libGOT.so
+7f2355656000-7f2355657000 rw-p 00003000 08:02 8787599          /home/.../libGOT.so
 ```
 * Physical Page Mapping)
     * 0x7f2355653000   ->   0x2b932000
