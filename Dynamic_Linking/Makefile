@@ -17,5 +17,8 @@ got: libGOT got.c
 lazy: lazy.c my_lib libGOT
 	gcc -nostdlib -fno-asynchronous-unwind-tables -z lazy -I . -L./ lazy.c -lM -lGOT -o lazy
 
+virt_to_phys: virt_to_phys.c
+	gcc -o virt_to_phys virt_to_phys.c
+
 clean:
-	rm -rf *o test *.so lazy
+	rm -rf *o test *.so lazy virt_to_phys

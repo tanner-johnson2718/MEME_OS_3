@@ -122,6 +122,29 @@ void print_GOT()
     my_puts("\n", 1);
 }
 
+int my_getpid()
+{
+    asm(
+        "mov $0x27, %rax\n"
+        "syscall\n"
+        "pop %rbp\n"
+        "ret\n"
+    );
+}
+
+void _my_read(int fd, char* buf, int c)
+{
+    asm(
+        "mov $0, %rax\n"
+        "syscall\n"
+    );
+}
+
+void wait()
+{
+    _my_read(0, 0, 1);
+}
+
 // ============================================================================
 // Test Drivers
 // ============================================================================
@@ -175,7 +198,7 @@ void my_exit()
 {
     asm(
         "mov $60, %rax\n"
-        "syscall"
+        "syscall\n"
     );
 }
 
@@ -194,6 +217,13 @@ void _start()
     inc_counter();
     print_GOT();
 
+    // Print pid and wait for input
+    int pid = my_getpid();
+    char my_pid[17];
+    int len = ptr_to_hex_str(pid, my_pid);
+    my_pid[len -1] = '\n';
+    my_puts(my_pid, len);
+    wait();
 
     my_exit();
 }
