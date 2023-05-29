@@ -249,7 +249,7 @@ This just about concludes the topic of dynamic linking. We have seen how the com
 
 To conclude our look at dynamic linking, lets look at its one key useful property. Sharing a single chunk of code resident in memory between multiple programs. To explore this we add a little code at the end of `lazy.c`. We add a system call to print its PID and we a do a read system call on the STDIN fd so that the program does not exit until we enter a key stroke into the terminal. 
 
-We run two instances of `lazy`. In linux, the procfs system interface can be used to dump the virtual pages of a process. This is done with `cat /proc/<pid>/maps`. We then make use of a program `virt_to_phys` ([code taken from here](https://stackoverflow.com/questions/5748492/is-there-any-api-for-determining-the-physical-address-from-virtual-address-in-li)) to convert the pages of each process that are associated with `libGOT` into physical addresses. Finally we can compare and see what pages each process shares and what parts of libGOT are not shared. Note, we will cover topics such as virual memory, procfs, files, etc in more detail at later timer. For now, focus on using these concepts to highlight how libGOT gets shared and what sections do not get shared.
+We run two instances of `lazy`. In linux, the procfs system interface can be used to dump the virtual pages of a process. This is done with `cat /proc/<pid>/maps`. We then make use of a program `virt_to_phys` ([code taken from here](https://stackoverflow.com/questions/5748492/is-there-any-api-for-determining-the-physical-address-from-virtual-address-in-li)) to convert the pages of each process that are associated with `libGOT` into physical addresses. Finally we can compare and see what pages each process shares and what parts of libGOT are not shared. Note, we will cover topics such as virual memory, procfs, files, etc in more detail at a later timer. For now, focus on using these concepts to highlight how libGOT gets shared and what sections do not get shared.
 
 
 **Proc 1**
@@ -312,22 +312,30 @@ Program Headers:
    09     .dynamic .got 
 ```
 
-We can see from the above that the 4 load segmenets found in the `libGOT.so` library correspond with the 4 pages found in each processes virtual. Moreover, we see a key pattern. The first two pages / segments are shared, the last two get copied such that each process gets its own unique copy. Now from the Section to Segment mapping we can see that its things such as meta data, the symbol table, and most importantly the code that gets shared. The data sections and GOT are copied. This makes sense. We want to reuse the code, however, each invocation of a shared library should result in a seperate data section. My program using some shared library should not mess with the state of your program using the same shared library. 
+We can see from the above that the 4 load segmenets found in the `libGOT.so` library correspond with the 4 pages found in each processes virtual. Moreover, we see a key pattern. The first two pages / segments are shared, the last two get copied such that each process gets its own unique copy. Now from the Section to Segment mapping we can see that its things such as meta data, the symbol table, and most importantly the code is what gets shared. The data sections and GOT are copied. This makes sense. We want to reuse the code, however, each invocation of a shared library should result in a seperate data section. My program using some shared library should not mess with the state of your program using the same shared library. 
 
 ## Clean Up
 
+We will be moving on from linking and have just spent a lot of time exploring it. Below are a few clean up topics that are useful but did not fit neatly into our previous dicussions. 
+
+At the end of the day, linking is simply how two C files get patched together such that code and state from one can be used by the other. We have seen this process of patching is not so straight forward. However, it can be neatly summarized by looking at the data structures involved.
+
+1) Symbol Table. A list of all static and global variables, functions, etc. That a program either implements or needs.
+
+2) Relocation Table. For every instance of function or global that is needed, the compiler puts an entry in this table saying "Hey I need this reference to a function when its found to be updated here in my code".
+
+3) GOT. The GOT is just an array of addresses. When referencing a shared library, every function or global from that library gets one index in the GOT such that all references in the code all point to the GOT. The GOT will be updated with the runtime address of those shared library symbols.
+
+4) PLT. The PLT is used for resolving shared library functions. It consists of a wrapper function so that all calls to shared library functions call this wrapper function. The wrapper function points to some assembly uniqie to shared library function. This assembly pushes the index of the function that needs resolving and invokes the dynamic linker.
+
+If you can deeply understand the above data stuctures, then you can master the topic of linking.
+
 ### System Shared Libraries
 
-* How do I see what shared libraries are currently resident in memory?
-    * stdlib
-    * libc
-* crt1.0?
-* When are these loaded on startup?
-    * Or are they loaded on an as needed basis?
-    * Once loaded, how does it know where it is??
+* **Q** What shared system libraries are currently in use?
+    * `sudo awk '$NF!~/\.so/{next} {$0=$NF} !a[$0]++' /proc/*/maps`
 
-* why is _start the entry, is it loader or linker?
 
 ### Linker Script Clean up 
 
-### Conclusion
+Ideally we'd have an in depth exploration here. However, we leave it as a topic for later disucssion. 
