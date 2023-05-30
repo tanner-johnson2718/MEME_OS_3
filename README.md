@@ -10,7 +10,7 @@ MEME OS 3 will take a bit of a detour. The eleavator pitch is "everything your 4
     * How are args passed?
     * Exit Codes?
     * Execution?
-* ... etc ...
+* What **exactly** happens when I call `printf("hello\n");`.
 
 We will repeat this type of questioning and digging for increasingly complicated boiler plate C and linux code. The goal here being make precise and rigorious the exact system processes we take for granted while programming and use this type of "playing" or "exploring" as a mechanism for understanding how linux works, starting from hello world.
 
@@ -19,12 +19,13 @@ To keep projected well bounded we will implace the following contraints)
 * Only look at what can be gathered from user space C programs, command line tools, and system interfaces. (Still include references to kernel code or headers but focus on what can be seen / interfaced with via a terminal or C program in user land).
 * Use a singular program as a means to examine and exlempify a singular topic. Predefine what will be examined with each program. And push discussion of topics outside those predefined to a future program that will examine and highlight that topic.
 * Make a road map of precisely what topics will be explored
+* **Focus on the "hands on"**. Instead of pointing to a text book that explains how something works, write code and tinker with some example code to SHOW what the text book explains.
 
 # Road Map
 
-* [X] [Hello World, What did you give me?](./Hello_World/)
-* [X] [Hello World, A link to the past](./Linking/)
-* [ ] [Hello World, Sharing is Caring](./Dynamic_Linking)
+* [X] [Hello World, What did you give me?](./Hello_World/) (ELF File Format)
+* [X] [Hello World, A link to the past](./Linking/) (Static Linking and Archives)
+* [X] [Hello World, Sharing is Caring](./Dynamic_Linking) (Dynamic Linking and Shared Libraries)
 * [ ] [Hello World, What do you do?](./Loading/)
 * [ ] Heap Exploration (Malloc)
 * [ ] File IO
