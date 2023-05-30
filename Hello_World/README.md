@@ -19,6 +19,11 @@ int main(int argc, char** argv)
 
 We will use the simple hello world exectuable as a means to examine the format and contents of an ELF executable. This is one of the first questions one might have after creating a hello world. The 4 or so lines of the hello world can be explained away pretty easily even though there is alot going on, but its not so easy to explain away the fact that the hello world executable is several KB. Why is this? If you are reading this you probably are faintly aware of assembly and have done a dissembly of an executable. When one disasembles the hello world exe its very clear there is more going on here then first meets the eye. Thus this is where we begin our adventure. We will look at the ELF format and the contents of an executable. This will lead to way way more questions then get answered, but this property makes it a good starting point for this project.
 
+**This topic is much less structered then the following sctions**. Use this section as means to raise questions. The key take away is the following:
+
+* Understand the diagram below showing the ELF format
+* Understand code is segmented into code (.text), data (.data, .bss), and other sections
+* Most of these ELF segements and sections aid in the process of linking.
 # Examining the output (ELF Format and Contents)
 
 ![alt text](Elf-layout--en.svg.png)
