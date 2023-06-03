@@ -13,8 +13,5 @@ int main(int argc, char** argv) {
 
 The goal here is to understand all that extra junk that gets put into the elf, follow its execution with gdb, and look at it the process by which a program gets loaded into memory.
 
-## GDB
-
-https://darkdust.net/files/GDB%20Cheat%20Sheet.pdf
 
 ## Ret Codes and Command Line Args

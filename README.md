@@ -27,10 +27,18 @@ To keep projected well bounded we will implace the following contraints)
 * [X] [Hello World, A link to the past](./Linking/) (Static Linking and Archives)
 * [X] [Hello World, Sharing is Caring](./Dynamic_Linking) (Dynamic Linking and Shared Libraries)
 * [ ] [Hello World, What do you do?](./Loading/)
-* [ ] Heap Exploration (Malloc)
-* [ ] File IO
-* [ ] Sockets
-* [ ] Forks, Process CTL
+* [ ] System Calls
+* [ ] Interrupts
+* [ ] Processes and Threads
+* [ ] Memory management and layout
+* [ ] Files, File Systems and Devices
+* [ ] Linux Network Stack
+* [ ] Semaphores, Mutexs, and CVs
+* [ ] Appendix
+    * [ ] Makefiles
+    * [ ] Linker Scripts
+    * [ ] Sysfs, Procfs, and other System Interfaces
+    * [ ] GDB, Valgrind, and other Tools
 
 # Pre-Reqs
 
