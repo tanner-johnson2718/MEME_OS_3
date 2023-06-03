@@ -5,8 +5,7 @@ In this installment we want figure out the exact process by which we go from typ
 * Command Line Arguments and Environment Variables
 * Return Codes
 * The shell
-* All those extra functions called in our elf
-* Loader vs Linker?
+* Libc and Dynamic Linker Invocation
 
 
 ## Command Line Args and Environment Variables
