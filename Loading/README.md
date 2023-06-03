@@ -11,3 +11,11 @@ In this installment we want figure out the exact process by which we go from typ
 
 ## Command Line Args and Environment Variables
 
+In `cmd_args.c` we write a small program to output the contents and locations of the command line args and evironment variables relative to the main stack frame. Running this we can gather a few interesting things that one may not have been aware of prior
+
+* The environment variables of the shell used to execute the program are loaded into the memory of the program
+    * Using proc/<pid>/maps we can see that these are stored at the very very top of the memory region allocated for the stack. 
+* The command line args are also stored at the very top of the stack
+* This gives us the following stack layout per [CSAPP](../Computer%20Systems%20A%20Programmers%20Perspective%20(3rd).pdf) :
+
+![alt text](./cmd_args.png)

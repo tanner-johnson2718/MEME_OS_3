@@ -1,4 +1,8 @@
-#include <stdio.h>
+// Find and print all the command line args and environment variables relative
+// to the Main funcs stack frame.
+
+#include <stdio.h>      // printf
+#include <unistd.h>     // read
 
 void* stack_base;
 
@@ -35,4 +39,12 @@ int main(int argc, char** argv, char** envp) {
         printf("envp[%d] = %p    *envp[%d] = %s\n", i,  rela((void*)envp[i]), i, envp[i]);
         ++i;
     }
+
+    /*
+    int pid = getpid();
+    printf("\nPID = %d\n", pid);
+    read(0, NULL, 1);
+    */
+
+    
 }
