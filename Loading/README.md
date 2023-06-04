@@ -37,4 +37,14 @@ Thus this leads to the question, **who or what exactly is creating this stack me
 
 ## Return Codes
 
-## The Shell
+Return or exit codes are concept used to tell whether a program executed successfully or not. Its mechanism is pretty simply and is arbitraited by system calls. The `exit` system call allows a process to indicate to its parent what its exit code is, and this is returned to the parent via the `waitpid` system call. These exit codes are heavily relied on by the unix shell. This all will make more sense once we cover processess and if one reads the Bash Shell appendix entry. However for now, the key take away is that return codes or exit codes are implemented via system calls.
+
+## The Shell and Launching a Program
+
+We are gonna look at new processes are created on Linux. We will cover processes in much more detail later. But the creation of a process is going to shed light on our current topic, loading programs. All processes are created by "forking" or duplicating an existing process. This copies just about everything in the current process and duplicates in the second "child" process. Again we will cover this in more detail, but that is fork at its essence. The Exec family of system calls replaces the current process image with that of the new one specified in its arguments. As we will see, it is this system call that sets up the stack with the command line args and the environment variables.
+
+This fork, exec combo is how the shell launches your program. While the shell does much more than this, at the end of the day when you type `./my_prog`, the shell process forks and calls exec on your passed program. Since all of this outside of our current scope and will be covered in detail later, we shall answer our above question simply and leave it for later study. That is, who is creating the stack memory and copying command line args to it? Exec.
+
+## Libc and Dynamic Linker Invocation
+
+We are leaving exploring process creation to our study of process. Thus in this section we will look at what happens to a hello world, using the C standard library is run. Specifically we will start our study with the memory of the process set up and the instruction pointer pointing to the first instruction 

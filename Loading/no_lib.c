@@ -8,5 +8,9 @@ void _start()
 {
     asm(
         "nop\n"
+        "pop %rbp\n"
+        "mov $60, %rax\n"
+        "mov $17, %rdi\n"
+        "syscall\n"
     );
 }

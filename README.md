@@ -26,7 +26,7 @@ To keep projected well bounded we will implace the following contraints)
 * [X] [Hello World, What did you give me?](./Hello_World) (ELF File Format)
 * [X] [Hello World, A link to the past](./Linking) (Static Linking and Archives)
 * [X] [Hello World, Sharing is Caring](./Dynamic_Linking) (Dynamic Linking and Shared Libraries)
-* [ ] [Hello World, What do you do?](./Loading)
+* [ ] [Hello World, What do you do?](./Loading) (Loading a Process)
 * [ ] System Calls
 * [ ] Interrupts
 * [ ] Signals
