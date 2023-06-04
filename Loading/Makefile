@@ -8,4 +8,4 @@ hello: hello.c
 	gcc -o hello hello.c
 
 clean: 
-	rm -rf cmd no_lib
+	rm -rf cmd no_lib hello

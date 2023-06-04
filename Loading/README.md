@@ -47,4 +47,6 @@ This fork, exec combo is how the shell launches your program. While the shell do
 
 ## Libc and Dynamic Linker Invocation
 
-We are leaving exploring process creation to our study of process. Thus we will conclude this section by looking at what happens to a hello world, using the C standard library, when it is ran. Specifically we will start our study when the memory of the process is set up and the instruction pointer pointing to the first instruction as specified by the start point in the ELF header.
+We are leaving exploring process creation to our study of process later. Thus we will conclude this section by looking at what happens to a hello world, using the C standard library, when it is ran. Specifically we will start our study when the memory of the process is set up and the instruction pointer pointing to the first instruction as specified by the start point in the ELF header.
+
+![alt text](./callgraph.png)
