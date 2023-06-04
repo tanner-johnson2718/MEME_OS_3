@@ -23,6 +23,10 @@ To keep projected well bounded we will implace the following contraints)
 
 # Road Map
 
+Here we will "tell the story" of this project. We started with a simple hello world in C. Our very first question is: [what exactly is this output file](./Hello_World). This lead to a "bullet-pointy" overview of the ELF format and its contents. This lead to several other questions. Much of the contents of an ELF are used in the process of linking so that was the second topic we looked at. We started with [static linking]()
+
+## Check List
+
 * [X] [Hello World, What did you give me?](./Hello_World) (ELF File Format)
 * [X] [Hello World, A link to the past](./Linking) (Static Linking and Archives)
 * [X] [Hello World, Sharing is Caring](./Dynamic_Linking) (Dynamic Linking and Shared Libraries)
@@ -40,6 +44,8 @@ To keep projected well bounded we will implace the following contraints)
     * [ ] Linker Scripts
     * [ ] Sysfs, Procfs, and other System Interfaces
     * [ ] GDB, Valgrind, and other Tools
+
+## Topic Graph
 
 # Pre-Reqs
 
