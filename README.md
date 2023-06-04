@@ -23,12 +23,13 @@ To keep projected well bounded we will implace the following contraints)
 
 # Road Map
 
-* [X] [Hello World, What did you give me?](./Hello_World/) (ELF File Format)
-* [X] [Hello World, A link to the past](./Linking/) (Static Linking and Archives)
+* [X] [Hello World, What did you give me?](./Hello_World) (ELF File Format)
+* [X] [Hello World, A link to the past](./Linking) (Static Linking and Archives)
 * [X] [Hello World, Sharing is Caring](./Dynamic_Linking) (Dynamic Linking and Shared Libraries)
-* [ ] [Hello World, What do you do?](./Loading/)
+* [ ] [Hello World, What do you do?](./Loading)
 * [ ] System Calls
 * [ ] Interrupts
+* [ ] Signals
 * [ ] Processes and Threads
 * [ ] Memory management and layout
 * [ ] Files, File Systems and Devices
@@ -45,4 +46,7 @@ To keep projected well bounded we will implace the following contraints)
 * Basic C and Linux Skills
 * Warm and Fuzzy for IO, files, process memory foot print, etc.
 * Linux System
-* GDB 
+* Basic understanding needed is needed for the following. We cover what is needed as we go and provide an [appendix](./Appendix) for quick reference on these topics.
+    * GDB
+    * Makefiles
+    * Shell Scripting
