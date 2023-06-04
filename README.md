@@ -46,7 +46,7 @@ To keep projected well bounded we will implace the following contraints)
 * Basic C and Linux Skills
 * Warm and Fuzzy for IO, files, process memory foot print, etc.
 * Linux System
-* Basic understanding needed is needed for the following. We cover what is needed as we go and provide an [appendix](./Appendix) for quick reference on these topics.
+* Basic understanding is needed for the following. We cover what is needed as we go and provide an [appendix](./Appendix) for quick reference on these topics.
     * GDB
     * Makefiles
     * Shell Scripting
