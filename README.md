@@ -23,8 +23,6 @@ To keep projected well bounded we will implace the following contraints)
 
 # Road Map
 
-Here we will "tell the story" of this project. 
-
 ## Part 1
 
 We started with a simple hello world in C and this served as the boiler plate code that guided our exploration in part 1. Our very first question is: [what exactly is this output file](./Hello_World) we get when we compile a hello world. This lead to a "bullet-pointy" overview of the ELF format and its contents. Much of the contents of an ELF are used in the process of linking so that was a natural second topic. We started with [static linking](./Linking) where we described how symbols are used to "export" and "import" entities (functions, global variables, etc) shared between C files. We also looked at relocation which is how assembled C files are patched together so that references to symbols in other files are resolved. 
