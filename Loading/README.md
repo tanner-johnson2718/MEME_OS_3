@@ -63,7 +63,7 @@ int main()
 }
 ```
 
-We will dig into the loading of this by using GDb. If we start executing at the very first instruction we see that we find ourself in the _start function of the dynamic linker (ld-linux-x86-64.so.2). Skipping through the execution of the dynamic linker and looking at the GOT before and after we get the table below. We can see from this that dynamic linker chose not to do lazy binding and the required symbols were linked prior to the dynamic linker passing control to our exe.
+We will dig into the loading of the above program by using GDB. If we start executing at the very first instruction we see that we find ourself in the _start function of the dynamic linker (ld-linux-x86-64.so.2). Skipping through the execution of the dynamic linker and looking at the GOT before and after we get the table below. We can see from this that dynamic linker chose not to do lazy binding and the required symbols were linked prior to the dynamic linker passing control to our exe.
 
 | .got Addr | Symbol | Val before linker | Val after |
 | --- | --- | --- | --- |
@@ -77,18 +77,42 @@ We will dig into the loading of this by using GDb. If we start executing at the 
 | 0x555555557ff0 | _ITM_registerTMCloneTable | 0x0 | 0x0 |
 | 0x555555557ff8 | __cxa_finalize | 0x0 | 0x7ffff7df1f10 |
 
-Using GDB and objdump we can see that the compiler made our entry point for us. The _start function
+Using GDB and objdump we can see that the compiler made our entry point for us. The _start function sets up some registers, passes the location of main, __libc_csu_fini, and __libc_csu_init to __libc_start_main, which was linked during the invocation of the dynamic linker at the start of the program. libc_start's source code can be accessed [here](https://www.gnu.org/software/libc/sources.html). libc-start is doing a few key things. These are:
+
+* Setting up pthreads
+* Calling early init functions
+    * This is actually done by the dynamic linker in the case of a shared object as in our case here
+    * The _init symbol is also called by the dynamic linker. It purpose is to execute code when a shared library gets loaded.
+    * This _init function is also what calls gmon_start, a symbol for setting up the gmon profiler.
+    * This is point at which user group and permissions are checked
+* 
 
 
 * _start in our hello
-* __lib_start_main
-* __libc_csu_init
-* _init
-* frame_dummy
-* register_tm_clones
-* __libc_csu_init
-* __lib_start_main
-* main
-* __lib_start_main
-* __cxa_finalize
-* deregister_tm_clones
+    * __lib_start_main
+        * __GI___cxa_atexit
+            * __new_exitfn
+    * __libc_csu_init
+        * _init
+            * __gmon_start **NOT CALLED, BUT WOULD BE**
+        * frame_dummy
+                * register_tm_clones
+    * main
+    * __GI_exit
+        * __run_exit_handlers
+            * __GI___call_tls_dtors
+            * _dl_fini
+                * rtld_lock_default_lock_recursive
+                * _dl_sort_maps
+                    * memset
+                * __do_global_dtors_aux
+                    * __cxa_finalize
+                        * __unregister_atfork
+                    * deregister_tm_clones
+            * IO_cleanup
+                * _IO_flush_all_lockp
+
+*DSO?
+
+### Resources
+* https://www.sco.com/developers/gabi/latest/ch5.dynamic.html#init_fini
