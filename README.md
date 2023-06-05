@@ -36,7 +36,7 @@ Static linking copies the code and data of assembled C files into every executab
 
 ## Part 1.5
 
-It was clear from part 1 that libc introduces all sorts of weirdness. To keep our exploration as pointed as possible and to eliminate any obfuscation of what our code is actually doing we are gonna write our own libc
+It was clear from part 1 that libc introduces all sorts of weirdness. To keep our exploration as pointed as possible and to eliminate any obfuscation of what our code is actually doing we are gonna write [our own libc](./MEME_Lib/). It gives us basic wrappers for commonly used system calls, some string manip, and anything else we add later.
 
 ## Part 2, Async
 
