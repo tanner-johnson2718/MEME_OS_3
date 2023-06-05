@@ -25,10 +25,11 @@ To keep projected well bounded we will implace the following contraints)
 
 Here we will "tell the story" of this project. 
 
-**Part 1**
+## Part 1
+
 We started with a simple hello world in C and this served as the boiler plate code that guided our exploration in part 1. Our very first question is: [what exactly is this output file](./Hello_World) we get when we compile a hello world. This lead to a "bullet-pointy" overview of the ELF format and its contents. This in turn lead to several other questions. Much of the contents of an ELF are used in the process of linking so that was the second topic we looked at. We started with [static linking](./Linking) where we described how symbols are used to "export" and "import" the shared entities in a given C file to another (functions, global variables, etc). We also looked at relocation which is how assembled C files are patched together so that references to symbols in other files are resolved. Static linking copies the code and data of assembled C files into every executable that uses said code and data. That's inefficient and [Dynamic Linking](./Dynamic_Linking) solves this issue. With dynamic linking we looked at how the PLT and GOT are used by the dynamic linker to resolve symbols at run time. Finally, we concluded our disection of the hello world by looking at how executables are [Loaded](./Loading) once its process is created. At the conclusion of Part 1, one should have a very good understanding about how one goes from a C hello world to an executable loaded in memory that uses system calls and references the C standard library to print "Hello" to the terminal.
 
-**Part 2**
+## Part 2
 Part 2 is where we start to dig deeper into the kernel space. 
 
 ## Check List
@@ -46,14 +47,11 @@ Part 2 is where we start to dig deeper into the kernel space.
 * [ ] Linux Network Stack
 * [ ] Semaphores, Mutexs, and CVs
 * [ ] Appendix
-    * [ ] [GDB](./Appendix/GDB)
+    * [X] [GDB](./Appendix/GDB)
     * [ ] BASH
     * [ ] Makefiles
     * [ ] Linker Scripts
     * [ ] Sysfs, Procfs, and other System Interfaces
-    
-
-## Topic Graph
 
 # Pre-Reqs
 
