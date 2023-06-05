@@ -46,7 +46,7 @@ Part 2 is where we start to dig deeper into the kernel space.
 * [ ] Linux Network Stack
 * [ ] Semaphores, Mutexs, and CVs
 * [ ] Appendix
-    * [ ] GDB
+    * [ ] [GDB](./Appendix/GDB)
     * [ ] BASH
     * [ ] Makefiles
     * [ ] Linker Scripts
