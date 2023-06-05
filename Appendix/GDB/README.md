@@ -1,6 +1,6 @@
 # My GDB Cheat Sheet
 
-Below is table of the must know GDB commands. With these you can almost anything. Will add to list as we examine more and more topics.
+Below is table of the must know GDB commands. With these you can almost examine almost anything in your process. We will add to this list as we examine more and more topics.
 
 | Command | Description | Comment |
 | --- | --- | --- |
