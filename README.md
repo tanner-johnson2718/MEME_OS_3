@@ -23,25 +23,33 @@ To keep projected well bounded we will implace the following contraints)
 
 # Road Map
 
-## Part 1
+## Part 1, Hello World
 
 We started with a simple hello world in C and this served as the boiler plate code that guided our exploration in part 1. Our very first question is: [what exactly is this output file](./Hello_World) we get when we compile a hello world. This lead to a "bullet-pointy" overview of the ELF format and its contents. Much of the contents of an ELF are used in the process of linking so that was a natural second topic. We started with [static linking](./Linking) where we described how symbols are used to "export" and "import" entities (functions, global variables, etc) shared between C files. We also looked at relocation which is how assembled C files are patched together so that references to symbols in other files are resolved. 
 
 Static linking copies the code and data of assembled C files into every executable that uses said code and data. That's inefficient and [Dynamic Linking](./Dynamic_Linking) solves this issue. With dynamic linking we looked at how the PLT and GOT are used by the dynamic linker to resolve symbols at run time. Finally, we concluded our disection of the hello world by looking at how executables are [Loaded](./Loading) once its process is created. At the conclusion of Part 1, one should have a very good understanding about how one goes from a C hello world to an executable loaded in memory that uses system calls and references the C standard library to print "Hello" to the terminal.
 
-## Part 2
-Part 2 is where we start to dig deeper into the kernel space. 
-
-## Check List
-
 * [X] [Hello World, What did you give me?](./Hello_World) (ELF File Format)
 * [X] [Hello World, A link to the past](./Linking) (Static Linking and Archives)
 * [X] [Hello World, Sharing is Caring](./Dynamic_Linking) (Dynamic Linking and Shared Libraries)
-* [ ] [Hello World, What do you do?](./Loading) (Loading a Process)
-* [ ] Processes and Threads
+* [X] [Hello World, What do you do?](./Loading) (Loading a Process)
+
+## Part 1.5
+
+It was clear from part 1 that libc introduces all sorts of weirdness. To keep our exploration as pointed as possible and to eliminate any obfuscation of what our code is actually doing we are gonna write our own libc
+
+## Part 2, Async
+
+Part 2 is where we start to dig deeper into the kernel space. In part 1 we took for granted process creation and system calls without digging too deep into what happens before the dynamic linker or my entry point is given control. We also did not dig to deep into what happens when I raise a system call with the instruction `syscall` or analgously use the C standard library wrappers for system calls. Thus in this we part we dig into these concepts. Part one dealt with singular process, hello world. We coin this part Async b/c this where we start to look into the rabbit hole that is how several programs run asynchronously. 
+
+* [ ] Processes
 * [ ] System Calls
 * [ ] Interrupts
 * [ ] Signals
+* [ ] Threads
+
+## TODO
+
 * [ ] Memory management and layout
 * [ ] Files, File Systems and Devices
 * [ ] Linux Network Stack
