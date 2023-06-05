@@ -63,6 +63,8 @@ int main()
 }
 ```
 
+### Init
+
 We will dig into the loading of the above program by using GDB. If we start executing at the very first instruction we see that we find ourself in the _start function of the dynamic linker (ld-linux-x86-64.so.2). Skipping through the execution of the dynamic linker and looking at the GOT before and after we get the table below. We can see from this that dynamic linker chose not to do lazy binding and the required symbols were linked prior to the dynamic linker passing control to our exe.
 
 | .got Addr | Symbol | Val before linker | Val after |
@@ -85,8 +87,24 @@ Using GDB and objdump we can see that the compiler made our entry point for us. 
     * The _init symbol is also called by the dynamic linker. It purpose is to execute code when a shared library gets loaded.
     * This _init function is also what calls gmon_start, a symbol for setting up the gmon profiler.
     * This is point at which user group and permissions are checked
-* 
+* Libc init (if not done so by the dynamic linker)
+* Register destructor of statically linked programs (__cxa_atexit)
+    * This calls the destructors when the shared library is unloaded.
+* Call the init array
+    * This is different from the pre init array. This array has access to the loaded libraries and is true constructor of the program
+    * This is what __libc_csu_init does.
+* Finally call main with the proper arguments as shown in the previous section.
 
+This covers the libc init process fairly well. Looking at our call stack below, we are missing a few key topics:
+
+* Frame Dummy - Called by __libc_csu_init. Used in stack unwinding in exception handling. (Not really covered throughout our project).
+* TM Clones - Used in [GNU ITM](https://gcc.gnu.org/onlinedocs/libitm/). Again outside of scope.
+
+### Fini
+
+### Hello Call Stack
+
+Below is the FULL call stack of a hello world, not including the invocation of the dynamic linker. We include this here as a reference and to ensure that we cover the full program startup and procedures implemented by libc.
 
 * _start in our hello
     * __lib_start_main
@@ -112,7 +130,12 @@ Using GDB and objdump we can see that the compiler made our entry point for us. 
             * IO_cleanup
                 * _IO_flush_all_lockp
 
-*DSO?
+### Questions
+* DSO?
+* __dso_handle
 
 ### Resources
 * https://www.sco.com/developers/gabi/latest/ch5.dynamic.html#init_fini
+* http://dbp-consulting.com/tutorials/debugging/linuxProgramStartup.html
+
+## Conclusion
