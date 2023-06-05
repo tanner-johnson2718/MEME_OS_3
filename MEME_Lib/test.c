@@ -8,18 +8,18 @@ void test_ptr_to_hex_str()
 
     void* ptr0 = (void*) 0x1;
     len = ptr_to_hex_str((u64) ptr0, (u8*) t1, buff_size);
-    my_puts(t1, len-1);
-    my_puts("\n", 1);
+    meme_puts(t1, len-1);
+    meme_puts("\n", 1);
     
     void* ptr1 = (void*) 0x1000;
     len = ptr_to_hex_str((u64) ptr1, (u8*) t1, buff_size);
-    my_puts(t1, len-1);
-    my_puts("\n", 1);
+    meme_puts(t1, len-1);
+    meme_puts("\n", 1);
     
     void* ptr2 = (void*) 0xabcdef123;
     len = ptr_to_hex_str((u64) ptr2, (u8*) t1, buff_size);
-    my_puts(t1, len-1);
-    my_puts("\n", 1);
+    meme_puts(t1, len-1);
+    meme_puts("\n", 1);
 
 }
 
@@ -32,9 +32,9 @@ void test_val_to_ascii()
     for(i = 0; i < 16; ++i)
     {
         t[0] = val_to_ascii(i);
-        my_puts(t, 1);
+        meme_puts(t, 1);
     }
-    my_puts("\n", 1);
+    meme_puts("\n", 1);
 
     return;
 }

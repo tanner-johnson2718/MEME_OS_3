@@ -35,6 +35,14 @@ s32 meme_getpid(void)
    );
 }
 
+s32 meme_getppid(void)
+{
+    asm(
+        "mov $110,%rax\n"
+        "syscall\n"
+   );
+}
+
 void meme_exit(s32 stat)
 {
     asm(
@@ -43,9 +51,26 @@ void meme_exit(s32 stat)
    );
 }
 
-s32 my_puts(u8* str, u32 len)
+s32 meme_puts(u8* str, u32 len)
 {
     meme_write(1, str, len);
+}
+
+s32 meme_fork(void)
+{
+    asm(
+        "mov $57,%rax\n"
+        "syscall\n"
+   );
+}
+
+s32 meme_waitpid(s32 pid, s32* wstatus, s32 options)
+{
+    asm(
+        "mov $61,%rax\n"
+        "mov $0, %r10\n"
+        "syscall\n"
+   );
 }
 
 
