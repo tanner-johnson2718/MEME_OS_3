@@ -102,6 +102,15 @@ This covers the libc init process fairly well. Looking at our call stack below, 
 
 ### Fini
 
+When main exits, it passes its return code back to __libc_start_main who immediatly calls __GI_exit again passing the return code. This in turn calls run_exit_handlers, for which we have GLIBC C code for (in the file `exit`). This function will:
+
+* Clean up thread local storage
+* Calls all functions registered with the atexit function in reverse order
+* Calls fini functions in order of array
+* Finally call destructors
+* Clean up STDIO
+* Call exit with correct status code
+
 ### Hello Call Stack
 
 Below is the FULL call stack of a hello world, not including the invocation of the dynamic linker. We include this here as a reference and to ensure that we cover the full program startup and procedures implemented by libc.
@@ -131,11 +140,9 @@ Below is the FULL call stack of a hello world, not including the invocation of t
                 * _IO_flush_all_lockp
 
 ### Questions
-* DSO?
-* __dso_handle
+* DSO and __dso_handle 
+    * Dynamically shared object
 
 ### Resources
 * https://www.sco.com/developers/gabi/latest/ch5.dynamic.html#init_fini
 * http://dbp-consulting.com/tutorials/debugging/linuxProgramStartup.html
-
-## Conclusion
