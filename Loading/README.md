@@ -50,3 +50,45 @@ This fork, exec combo is how the shell launches your program. While the shell do
 We are leaving exploring process creation to our study of process later. Thus we will conclude this section by looking at what happens to a hello world, using the C standard library, when it is ran. Specifically we will start our study when the memory of the process is set up and the instruction pointer pointing to the first instruction as specified by the start point in the ELF header.
 
 ![alt text](./callgraph.png)
+
+The above call graph gives us an idea of what to look for as we reverse engineer our hello world:
+
+```C
+#include <stdio.h>
+
+int main()
+{
+    printf("Hello\n");
+    return 0;
+}
+```
+
+We will dig into the loading of this by using GDb. If we start executing at the very first instruction we see that we find ourself in the _start function of the dynamic linker (ld-linux-x86-64.so.2). Skipping through the execution of the dynamic linker and looking at the GOT before and after we get the table below. We can see from this that dynamic linker chose not to do lazy binding and the required symbols were linked prior to the dynamic linker passing control to our exe.
+
+| .got Addr | Symbol | Val before linker | Val after |
+| --- | --- | --- | --- |
+| 0x555555557fb8 | .dynamic | 0x3dc8 | 0x3dc8 |
+| 0x555555557fc0 | dynamic reloc entries | 0x0 | 0x0 |
+| 0x555555557fc8 | dynamic linker | 0x0 | 0x0 |
+| 0x555555557fd0 | puts | 0x1030 | 0x7ffff7e2f4 |
+| 0x555555557fd8 | _ITM_deregisterTMCloneTable | 0x0 | 0x0 |
+| 0x555555557fe0 | __libc_start_main | 0x0 | 0x7ffff7dcef90 |
+| 0x555555557fe8 | __gmon_start_ | 0x0 | 0x0 |
+| 0x555555557ff0 | _ITM_registerTMCloneTable | 0x0 | 0x0 |
+| 0x555555557ff8 | __cxa_finalize | 0x0 | 0x7ffff7df1f10 |
+
+Using GDB and objdump we can see that the compiler made our entry point for us. The _start function
+
+
+* _start in our hello
+* __lib_start_main
+* __libc_csu_init
+* _init
+* frame_dummy
+* register_tm_clones
+* __libc_csu_init
+* __lib_start_main
+* main
+* __lib_start_main
+* __cxa_finalize
+* deregister_tm_clones
