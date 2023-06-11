@@ -8,7 +8,9 @@ rusage: rusage.c
 	make -C ../MEME_Lib/
 	gcc  $(FLAGS) -o rusage rusage.c ../MEME_Lib/lib_meme.o
 
+sbrk: sbrk_test.c
+	gcc -o test sbrk_test.c
 
 clean:
-	rm -rf proc rusage
+	rm -rf proc rusage test
 	make clean -C ../MEME_Lib/

@@ -60,7 +60,7 @@ Part 2 is where we start to dig deeper into the kernel space. In part 1 we took 
     * [ ] BASH
     * [ ] Makefiles
     * [ ] Linker Scripts
-    * [ ] Sysfs, Procfs, and other System Interfaces, page map
+    * [ ] Sysfs, Procfs, page map, ioctl
 
 # Pre-Reqs
 

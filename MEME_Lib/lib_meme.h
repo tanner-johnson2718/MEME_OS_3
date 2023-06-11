@@ -12,7 +12,7 @@
 #define STD_OUT_FD 1
 #define STD_ERR_FD 2
 
-#define NULL 0S
+#define NULL 0
 
 // Calls syscall indicated by syscall number. Limit to 3 args (may need to
 // expand later for syscalls that take more params). Uses generic unsigned 64
@@ -37,6 +37,9 @@ void meme_exit(s32 stat);
 // Signals Syscalls
 u32 meme_alarm(u32 sec);
 s32 meme_pause();
+
+// Mem
+u64 meme_brk(u64);
 
 // Str manip
 s32 meme_puts(u8* str, u32 len);

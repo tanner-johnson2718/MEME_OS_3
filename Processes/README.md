@@ -23,9 +23,11 @@ In this installment we want to take a fairly detailed look at Linux Processes, h
 
 # Process Creation and Manipulation
 
-Here we are gonna introduce 2 new system calls. There are `fork` and `wait4`.
+Here we are gonna introduce 2 new system calls. These are `fork` and `wait4`.
 
 # Process Resources
+
+The rusage struct gives us 
 
 ```C
 struct rusage {
@@ -48,7 +50,11 @@ struct rusage {
 };
 ```
 
-# Process System Calls
+# What are all these processes
+
+## ps utility
+
+# Proc-FS
 
 # Questions
 

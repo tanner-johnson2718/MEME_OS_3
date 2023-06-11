@@ -3,22 +3,42 @@
 void _start()
 {
     const u32 iters = 0;
-    const u32 sleep_time = 1;
+    const u32 null_buff_len = 0;
+    const u64 heap_alloc = 0;
 
+    // Iterate to force some user cpu time and some involuntary context 
+    // switches
     if(iters > 0)
     {
-        int i, j;
+        u32 i, j;
         for(i = 0; i < iters; ++i)
         {
             j += i;
         }
     }
-    
-    if(sleep_time > 0)
+
+    // Print some null bytes to the screen to force system cpu time
+    if(null_buff_len > 0)
     {
-        meme_alarm(sleep_time);
-        meme_pause();
+
+        u32 i = 0;
+        for(; i < null_buff_len; ++i)
+        {
+            u8 c = 0;
+            meme_puts(&c, 1);
+        }
     }
+
+    // Allocate some heap space to push the max RSS value.
+    if(heap_alloc > 0)
+    {
+        u64 start = meme_brk(NULL);
+        u64 end = meme_brk(cur + heap_alloc);
+
+
+    }
+    
+    
 
     struct rusage ruse = {0};
 
