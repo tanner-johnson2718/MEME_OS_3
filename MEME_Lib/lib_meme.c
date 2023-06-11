@@ -73,6 +73,37 @@ s32 meme_waitpid(s32 pid, s32* wstatus, s32 options)
    );
 }
 
+s32 meme_wait4(s32 pid, s32 *wstatus, int options, struct rusage *rusage)
+{
+    asm(
+        "mov $61,%rax\n"
+        "syscall\n"
+   );
+}
+
+s32 meme_getrusage(s32 who, struct rusage *usage)
+{
+    asm(
+        "mov $98,%rax\n"
+        "syscall\n"
+   );
+}
+
+u32 meme_alarm(u32 sec)
+{
+    asm(
+        "mov $37, %rax\n"
+        "syscall\n"
+    );
+}
+
+s32 meme_pause()
+{
+    asm(
+        "mov $34, %rax\n"
+        "syscall\n"
+    );
+}
 
 // ============================================================================
 // String Manip
@@ -127,4 +158,40 @@ u32 ptr_to_hex_str(u64 ptr, u8* out, u32 out_size)
     out[2 + i] = 0;
 
     return 3+i;
+}
+
+// Print a string value pair line. The value will always be assumed to be a 
+// hex 64 bit value. A max char param can be passed such that the key value
+// pairs are vertically aligned
+void meme_print_key_val_line(u8* str, u32 len, u32 align, u64 val)
+{
+    const u32 max_str_len = 64;
+    if(align < len){
+        meme_puts("ERROR, align < len\n", 19);
+        return;
+    }
+
+    if(align > max_str_len)
+    {
+        meme_puts("ERROR, align > max_str_len\n", 27);
+        return;
+    }
+
+    u8 temp[20];
+    u32 temp_len = ptr_to_hex_str(val, temp, 20);
+
+    u32 pad_len = align - len;
+    char pad[pad_len];
+    int i = 0;
+    for(; i < pad_len; ++i)
+    {
+        pad[i] = ' ';
+    }
+
+    meme_puts("KEY= ", 5);
+    meme_puts(str, len);
+    meme_puts(pad, pad_len);
+    meme_puts("  VAL= ", 7);
+    meme_puts(temp, temp_len-1);
+    meme_puts("\n", 1);
 }

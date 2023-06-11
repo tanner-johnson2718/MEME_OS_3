@@ -12,24 +12,38 @@
 #define STD_OUT_FD 1
 #define STD_ERR_FD 2
 
-#define NULL 0
+#define NULL 0S
 
 // Calls syscall indicated by syscall number. Limit to 3 args (may need to
 // expand later for syscalls that take more params). Uses generic unsigned 64
 // bit value. Take care when casting return values and func args
 u64 meme_generic_syscall3(u64 arg1, u64 arg2, u64 arg3, u64 syscall_num);
 
-// Wrappers for commonly used syscalls
+// IO syscalls
 s32 meme_read(u32 fd, void* buff, u32 count);
 s32 meme_write(u32 fd, void* buff, u32 count);
+
+// Proc syscalls
+#include <sys/resource.h>
+#include <sys/time.h>
+s32 meme_wait4(s32 pid, s32 *wstatus, int options, struct rusage *rusage);
+s32 meme_getrusage(s32 who, struct rusage *usage);
 s32 meme_getpid(void);
 s32 meme_getppid(void);
-s32 meme_puts(u8* str, u32 len);
-void meme_exit(s32 stat);
 s32 meme_fork(void);
 s32 meme_waitpid(s32 pid, s32* wstatus, s32 options);
+void meme_exit(s32 stat);
 
+// Signals Syscalls
+u32 meme_alarm(u32 sec);
+s32 meme_pause();
+
+// Str manip
+s32 meme_puts(u8* str, u32 len);
 u8 val_to_ascii(u64 in);
 u32 ptr_to_hex_str(u64 ptr, u8* out, u32 out_size);
+void meme_print_key_val_line(u8* str, u32 len, u32 align, u64 val);
+
+
 
 #endif
