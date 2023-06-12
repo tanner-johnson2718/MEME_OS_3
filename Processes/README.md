@@ -39,7 +39,9 @@ Notice that in `proc.c` we make use of the `waitpid` system call. This system ca
 
 Now it turns out that `waitpid` is more that a control flow call and it is 100% fundamental to the cleaning up of a process. If one does not call `waitpid` on its child process, the child enters a state called being a "zombie". It is terminated but its in kernel data structure is still maintained in memory. The process of calling `waitpid` on a child process is called "reaping". If a parent exits and does not reap its child, this child becomes an orphan. Orphans will be adopted by the init process and a linux service will reap them periodically. `proc.c` shows the proper way to deal call `waitpid` on chidren so as to avoid making them an orphan.
 
-Processes have a state associated with them and they move from state to state depending on their execution. This creates a state machine.
+Processes have a state associated with them and they move from state to state depending on their execution. This creates a state machine. Below is this state machine.
+
+![altext](./states.jpeg)
 
 ## Preemption and Context Switches
 
