@@ -4,7 +4,7 @@ void _start()
 {
     const u32 iters = 0;
     const u32 null_buff_len = 0;
-    const u64 heap_alloc = 0;
+    const u64 heap_alloc = 10*1024*1024;
 
     // Iterate to force some user cpu time and some involuntary context 
     // switches
@@ -33,12 +33,28 @@ void _start()
     if(heap_alloc > 0)
     {
         u64 start = meme_brk(NULL);
-        u64 end = meme_brk(cur + heap_alloc);
+        u64 end = meme_brk(start + heap_alloc);
+
+        if(start < 0 || end < 0)
+        {
+            meme_puts("brk failed\n", 11);
+            meme_exit(1);
+        }
+
+        if(end - start != heap_alloc)
+        {
+            meme_puts("brk did not allocate full mem\n", 29);
+            meme_exit(1);
+        }
 
 
+        // Trivially access mem to get some page faults
+        int i;
+        for(i = 0; i < heap_alloc; ++i)
+        {
+            ((u8*)start)[i] = 0ul;
+        }
     }
-    
-    
 
     struct rusage ruse = {0};
 

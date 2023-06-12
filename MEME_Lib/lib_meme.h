@@ -33,10 +33,13 @@ s32 meme_getppid(void);
 s32 meme_fork(void);
 s32 meme_waitpid(s32 pid, s32* wstatus, s32 options);
 void meme_exit(s32 stat);
+s32 meme_getpgid(s32 pid);
+s32 meme_setpgid(s32 pid, s32 pgid);
 
 // Signals Syscalls
 u32 meme_alarm(u32 sec);
 s32 meme_pause();
+s32 meme_sleep(u32 sec);
 
 // Mem
 u64 meme_brk(u64);

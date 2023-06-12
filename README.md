@@ -40,7 +40,7 @@ It was clear from part 1 that libc introduces all sorts of weirdness. To keep ou
 
 ## Part 2, Async
 
-Part 2 is where we start to dig deeper into the kernel space. In part 1 we took for granted process creation and system calls without digging too deep into what happens before the dynamic linker or my entry point is given control. We also did not dig to deep into what happens when I raise a system call with the instruction `syscall` or analgously use the C standard library wrappers for system calls. Thus in this we part we dig into these concepts. Part one dealt with singular process, hello world. We coin this part Async b/c this where we start to look into the rabbit hole that is how several programs run asynchronously. 
+Part 2 is where we start to dig deeper into the kernel space. In part 1 we took for granted process creation and system calls without digging too deep into what happens before the dynamic linker or my entry point is given control. We also did not dig to deep into what happens when I raise a system call with the instruction `syscall` or analgously use the C standard library wrappers for system calls. Thus in this we part we dig into these concepts. Part one dealt with singular process, hello world. We coin this part Async b/c this where we start to look into the rabbit hole that is how several programs run concurrently. 
 
 * [ ] Processes and Threads
 * [ ] System Calls
@@ -60,7 +60,13 @@ Part 2 is where we start to dig deeper into the kernel space. In part 1 we took 
     * [ ] BASH
     * [ ] Makefiles
     * [ ] Linker Scripts
-    * [ ] Sysfs, Procfs, page map, ioctl
+    * [ ] Linux Kernel Interfaces
+        * [ ] Sysfs
+        * [ ] Procfs
+        * [ ] page map
+        * [ ] ioctl 
+    * [ ] Linux Command Line Utilities
+        * [ ] PS
 
 # Pre-Reqs
 

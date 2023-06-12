@@ -113,6 +113,40 @@ u64 meme_brk(u64 in)
     );
 }
 
+s32 meme_getpgid(s32 pid)
+{
+    asm(
+        "mov $121, %rax\n"
+        "syscall\n"
+    );
+}
+
+s32 meme_setpgid(s32 pid, s32 pgid)
+{
+     asm(
+        "mov $109, %rax\n"
+        "syscall\n"
+    );
+}
+
+s32 meme_nanosleep(u64* ptr1, u64* ptr2)
+{
+    asm(
+        "mov $35, %rax\n"
+        "syscall\n"
+    );
+}
+
+s32 meme_sleep(u32 sec)
+{
+    u64 a = (u64) sec;
+    u64 b = 0;
+    u64 c = 0;
+    u64 d = 0;
+
+    return meme_nanosleep(&a, &c);
+}
+
 
 // ============================================================================
 // String Manip

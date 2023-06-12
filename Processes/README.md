@@ -17,13 +17,23 @@ Processes are created in linux by copying or forking an existing process. All pr
 * Getpid
 * Getppid
 * Exit
-* etc, etc
+* wait4
+* getpgid
+* setpgid
 
 In this installment we want to take a fairly detailed look at Linux Processes, how thier created, manipulated, and what precisely a process is composed of.
 
 # Process Creation and Manipulation
 
-Here we are gonna introduce 2 new system calls. These are `fork` and `wait4`.
+## Identifying and Grouping Processes
+
+As we've seen and explained many times a process gets created by copying an existing process. It has a field called a `pid` that can be accesed via the `getpid` system call that uniquely identifies a process on the system. Processes also maintain a `ppid` field which gives the `pid` of its parent. These two identify where a process sits in the process tree and who owns that process.
+
+Processes can also be grouped into a collection called ... well a group. By default the group ID of process launched is given a group ID = to its own pid. If this process then forks any children, that child inherits th group id of its paretn unless its parent or itself change its group ID. Note that if an exec call is used, the parent can no longer change the gid of its child.
+
+## Resources
+
+* https://www.win.tue.nl/~aeb/linux/lk/lk-10.html
 
 # Process Resources
 
@@ -55,6 +65,8 @@ struct rusage {
 ## ps utility
 
 # Proc-FS
+
+* https://docs.kernel.org/filesystems/proc.html
 
 # Questions
 
