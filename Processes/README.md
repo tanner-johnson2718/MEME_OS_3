@@ -47,8 +47,6 @@ A process starts in the runnable state which does not mean it is actively runnin
 
 In `state.c` we give some cases to explore the different states a process can be in. If `do_sleep=1` , then the parent process sleeps for 60s. One can then see the process state by running `cat /proc/$!/status | grep state`. This uses the procfs interface to look at the state status of the most recently ran process by the shell. If `do_unreaped_child=1`, then one can use the child pid instead of the `$!` shorthand to see the state of child that has not been reaped yet. Finally, the last case `do_stop_child=1` shows how to use signals to stop and continue a process.
 
-## Preemption and Context Switches
-
 ## Resources
 
 * https://www.baeldung.com/linux/process-states
@@ -56,6 +54,8 @@ In `state.c` we give some cases to explore the different states a process can be
 * https://linux-kernel-labs.github.io/refs/heads/master/so2/lec3-processes.html
 * https://tldp.org/LDP/tlk/kernel/processes.html
 * [CSAPP CH 8](../Computer%20Systems%20A%20Programmers%20Perspective%20(3rd).pdf)
+
+# Threads and Clone
 
 # Process Resources
 
@@ -67,6 +67,7 @@ In `state.c` we give some cases to explore the different states a process can be
 * Network Resources
 * ProcFS
 * Linux Proc / Task structure
+
 
 
 The rusage struct gives us 
@@ -97,3 +98,4 @@ struct rusage {
 # Questions
 
 * What are these "sys/*" includes? Are the libc or system headers?
+* Namespaces???
