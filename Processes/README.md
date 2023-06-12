@@ -77,16 +77,7 @@ struct rusage {
 
 # What are all these processes
 
-## ps utility
-
-# Proc-FS
-
-* https://docs.kernel.org/filesystems/proc.html
-
 # Questions
 
 * struct rusage *ru in wait?
 * What are these "sys/*" includes? Are the libc or system headers?
-
-# Resources
-
