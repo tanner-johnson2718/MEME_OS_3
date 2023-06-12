@@ -11,6 +11,10 @@ rusage: rusage.c
 sbrk: sbrk_test.c
 	gcc -o test sbrk_test.c
 
+state: state.c
+	make -C ../MEME_Lib/
+	gcc $(FLAGS) -o state state.c ../MEME_Lib/lib_meme.o
+
 clean:
-	rm -rf proc rusage test
+	rm -rf proc rusage test state
 	make clean -C ../MEME_Lib/

@@ -147,6 +147,14 @@ s32 meme_sleep(u32 sec)
     return meme_nanosleep(&a, &c);
 }
 
+s32 meme_kill(u32 pid, u32 sig)
+{
+    asm(
+        "mov $62, %rax\n"
+        "syscall\n"
+    );
+}
+
 
 // ============================================================================
 // String Manip
