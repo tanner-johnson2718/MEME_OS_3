@@ -47,8 +47,8 @@ s32 meme_kill(u32 pid, u32 sig);
 
 // Mem
 u64 meme_brk(u64);
-void* mmap(void* addr, u64 len, s32 prot, s32 flags, s32 fd, u64 off);
-s32 munmap(void* addr, u64 off);
+void* meme_mmap(void* addr, u64 len, s32 prot, s32 flags, s32 fd, u64 off);
+s32 meme_munmap(void* addr, u64 off);
 
 // Str manip
 s32 meme_puts(u8* str, u32 len);
