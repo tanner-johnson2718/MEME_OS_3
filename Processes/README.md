@@ -8,18 +8,19 @@ In previous sections we looked at hello world and saw that our hello world PROGR
 * Signal Handlers
 * Etc
 
-Processes are created in linux by copying or forking an existing process. All processes besides the init process have a single parent. Thus this makes the set of all processes on a system a tree. Processes have many relavent system calls and we will explore them in depth in this section. Some that we have already used are:
+Processes are created in linux by copying or forking an existing process. All processes besides the init process have a single parent. Thus this makes the set of all processes on a system a tree. Processes have many relavent system calls and we will explore them in depth in this section:
 
-* Fork
-* Clone
-* Exec
-* Waitpid
-* Getpid
-* Getppid
-* Exit
-* wait4
-* getpgid
-* setpgid
+* `Fork()`
+* `Clone()`
+* `Exec()`
+* `Waitpid()`
+* `Getpid()`
+* `Getppid()`
+* `Exit()`
+* `wait4()`
+* `getpgid()`
+* `setpgid()`
+* `gettid()`
 
 In this installment we want to take a fairly detailed look at Linux Processes, how thier created, manipulated, and what precisely a process is composed of.
 
@@ -58,6 +59,7 @@ In `state.c` we give some cases to explore the different states a process can be
 # Threads and Clone
 
 * TID?
+* Namespaces
 
 # Process Resources
 

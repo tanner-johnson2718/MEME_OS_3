@@ -166,6 +166,7 @@ s32 meme_gettid(void)
 void* meme_mmap(void* addr, u64 len, s32 prot, s32 flags, s32 fd, u64 off)
 {
     asm(
+        "mov %rcx, %r10\n"    // for some reason 4th arg in C is %rcx but for syscall is %r10
         "mov $9, %rax\n"
         "syscall\n"
     );
@@ -175,6 +176,15 @@ s32 meme_munmap(void* addr, u64 off)
 {
     asm(
         "mov $11, %rax\n"
+        "syscall\n"
+    );
+}
+
+s64 clone(u64 flags, void *stack, s32* parent_tid, s32* child_tid, u64 tls)
+{
+    asm(
+        "mov %rcx, %r10\n"    // for some reason 4th arg in C is %rcx but for syscall is %r10
+        "mov $56, %rax\n"
         "syscall\n"
     );
 }
