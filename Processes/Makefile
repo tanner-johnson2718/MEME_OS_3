@@ -15,6 +15,10 @@ state: state.c
 	make -C ../MEME_Lib/
 	gcc $(FLAGS) -o state state.c ../MEME_Lib/lib_meme.o
 
+clone: clone.c
+	make -C ../MEME_Lib/
+	gcc $(FLAGS) -o clone clone.c ../MEME_Lib/lib_meme.o
+
 clean:
-	rm -rf proc rusage test state
+	rm -rf proc rusage test state clone
 	make clean -C ../MEME_Lib/

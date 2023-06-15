@@ -36,6 +36,9 @@ void meme_exit(s32 stat);
 s32 meme_getpgid(s32 pid);
 s32 meme_setpgid(s32 pid, s32 pgid);
 
+// Thread System Calls
+s32 meme_gettid(void);
+
 // Signals Syscalls
 u32 meme_alarm(u32 sec);
 s32 meme_pause();
@@ -44,6 +47,8 @@ s32 meme_kill(u32 pid, u32 sig);
 
 // Mem
 u64 meme_brk(u64);
+void* mmap(void* addr, u64 len, s32 prot, s32 flags, s32 fd, u64 off);
+s32 munmap(void* addr, u64 off);
 
 // Str manip
 s32 meme_puts(u8* str, u32 len);

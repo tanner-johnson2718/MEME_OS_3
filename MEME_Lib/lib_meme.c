@@ -155,6 +155,14 @@ s32 meme_kill(u32 pid, u32 sig)
     );
 }
 
+s32 meme_gettid(void)
+{
+    asm(
+        "mov $186, %rax\n"
+        "syscall\n"
+    );
+}
+
 
 // ============================================================================
 // String Manip
