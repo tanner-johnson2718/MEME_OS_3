@@ -102,9 +102,25 @@ The stack arg allows us to give our thread a dedicated memory chunk for its stac
 
 ## Exercise
 
-To get our hands dirty with clone, lets create a mutlithreaded application that takes a list of URLs, spawns a thread 
+In this exercise we simply want to write a clone system call wrapper that doesn't use glibc or pthreads. This turned out to be more challanging than one would expect. First we had to implement and figure out how to use `mmap`. This lead to a discovery that C calling conventions and those used by the `syscall` instruction are slightly different. So, when we wrote this wrapper in lib_meme we had to include the following assembly:
+
+```C
+ asm(
+        "mov %rcx, %r10\n"
+        "mov $56, %rax\n"
+        "syscall\n"
+    );
+```
+
+Next it was time implement the syscall `clone`. This turns out to be tricky, we call our lib_meme wrapper to execute the system call. However we pass a fresh stack to clone for use by the child and thus when the liv_meme wrapper returns it as no return address to return to. So we used the `tls` param passed to clone to pass a location to jump to. We played with the `CLONE_CHILD_SETTID` and `CLONE_PARENT_SETTID` to see how we can pass locations to the `clone` system call to update. This turned out to be not really useful as the return value from clone is the child_tid (in the parents context) and 0 in the childs context, but we can use the `gettid()` system call to get the child tid in the childs context.
+
+Ideally we would do a deeper dive on how clone works, thread local storage, etc. However, the goal of this section was to learn about processes. This very basic overview of threads shows how threads and processes are more or less the same at the OS level and we saw how we can finely control precisely what resources they share.
 
 # Process Resources
+
+We saw with threads that 
+
+## ProcFS
 
 ## IDs and Namespaces
 
@@ -141,7 +157,7 @@ struct rusage {
 
 ## Linux Proc / Task structure
 
-## ProcFS
+
 
 
 # What are all these processes on my system
@@ -149,4 +165,3 @@ struct rusage {
 # Questions
 
 * What are these "sys/*" includes? Are the libc or system headers?
-* Namespaces???

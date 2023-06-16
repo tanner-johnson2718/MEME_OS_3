@@ -188,10 +188,14 @@ s64 meme_clone(u64 flags, void *stack, s32* parent_tid, s32* child_tid, u64 tls)
         "syscall\n"
     );
 
-    register u64 ret asm("rax"); 
+    // Child
+    register u64 ret asm("rax");
     if(ret == 0)
     {
-       asm("jmp %r8");
+        
+        asm(
+            "call %r8\n"
+        );
     }
 }
 
