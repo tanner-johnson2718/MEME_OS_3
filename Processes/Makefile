@@ -19,6 +19,9 @@ clone: clone.c
 	make -C ../MEME_Lib/
 	gcc $(FLAGS) -o clone clone.c ../MEME_Lib/lib_meme.o
 
+ns: ns.c
+	gcc -o ns ns.c
+
 clean:
-	rm -rf proc rusage test state clone
+	rm -rf proc rusage test state clone ns 
 	make clean -C ../MEME_Lib/

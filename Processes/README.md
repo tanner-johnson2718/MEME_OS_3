@@ -118,17 +118,45 @@ Ideally we would do a deeper dive on how clone works, thread local storage, etc.
 
 # Process Resources
 
-We saw with threads that 
+We saw with threads that we have a god control over what resources are shared between parent and child. Thus in this section we want to be a bit more precise and exhaustivly look at these resources
 
 ## ProcFS
 
+The procFS file system gives userspace a glance into how the kernel sees a process. We have an [appendix item](../Appendix/Linux%20Kernel%20Interfaces/ProcFS/) that describes it in full detail. However, for now one should now a processes procfs entry is located at `/proc/<pid>`
+
 ## IDs and Namespaces
 
-## Memory
+* `man namespaces`
+* `man pid_namespaces`
+* `setns()`
+* `unshare()`
+* https://blog.quarkslab.com/digging-into-linux-namespaces-part-1.html
+* /proc/$$/ns
+
+```C
+struct upid {
+    int nr;  /* the pid value */
+    struct pid_namespace *ns;       /* the namespace this value
+                                    * is visible in */
+    struct hlist_node pid_chain; /* hash chain for faster search of PIDS in the given namespace*/
+};
+
+struct pid {
+    atomic_t count; /* reference counter */
+    struct hlist_head tasks[PIDTYPE_MAX]; /* lists of tasks */
+    struct rcu_head rcu;
+    int level;              // number of upids
+    struct upid numbers[0];  // array of pid namespaces
+};
+```
+
+## (Virtual) Memory
 
 ## Files, File System and IO
 
 ## Signals
+
+## IPC
 
 ## Networking
 
