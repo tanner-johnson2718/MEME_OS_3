@@ -38,8 +38,8 @@ s32 meme_setpgid(s32 pid, s32 pgid);
 
 // Thread System Calls
 s32 meme_gettid(void);
-#include <sched.h>
-s64 clone(u64 flags, void *stack, s32* parent_tid, s32* child_tid, u64 tls);
+#include <linux/sched.h>
+s64 meme_clone(u64 flags, void *stack, s32* parent_tid, s32* child_tid, u64 tls);
 
 // Signals Syscalls
 u32 meme_alarm(u32 sec);

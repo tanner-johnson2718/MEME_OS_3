@@ -58,23 +58,65 @@ In `state.c` we give some cases to explore the different states a process can be
 
 # Threads and Clone
 
-* TID?
+Threads are similar to a process in that they are an execution of a program. They have a stack and a register state. They differ from a process in that they usually share many resources that are ususally unique to a process. At the OS level threads and processes are treated the same and are generalized into a schedulable object called a task. We saw in many previous discussions the use of the system call `fork`. This systemcall is implemented using the more fine grain system call `clone`. Its signature is shown below.
+
+```C
+long clone(
+    unsigned long flags, 
+    void *stack,
+    int *parent_tid, 
+    int *child_tid,
+    unsigned long tls
+);
+```
+
+## Flags
+
+The flags supplied to `clone` give us a good idea at what resources a process posesess and gives us control over what resources are shared. Below is a list of these resources. The exact list can be looked up using the manual entry i.e. `man clone`.
+
+* TID - Thread ID. Used to identify a thread amoungst a thread group.
+* Signal Handlers - Default or shared. 
+* FD Table - File descriptor table
+* File System
+    * cwd
+    * root
+    * umask
+* I/O context - whether or not the threads share scheduling time slices for the IO scheduler.
 * Namespaces
+    * cgroup
+    * net
+    * mount
+    * UTS
+    * user
+* PID
+* Parent - Whether or not the calling process is considered the parent.
+* Tracing - Can make a thread untraceable
+* Can be started in a stopped state
+* CLONE_THREAD - whether or not spawned process is in same thread group. Thread groups are threads that all share the same PID.
+* Memory Space - Share same virtual address tables or not.
+* TGID - Thread group ID
+
+## Other args
+
+The stack arg allows us to give our thread a dedicated memory chunk for its stack. If NULL it will use the parents stack. However, if the child thread also shares the same memory space than this will cause issues as they will be using the same underlying physical memory. Otherwise if not using the same virtual memery, as in fork, copy on write semantics will be used to ensure pages are physically different. The TID args are the locations where the system call will update the parent and childs TID. Finally, TLS stands for thread local storage and in x86-64 the meaning of this arg is to be the of the spawned threads `%fs` base register. Discussion of this is outside of our scope and can be uncovered by investigating thread local storage.
+
+## Exercise
+
+To get our hands dirty with clone, lets create a mutlithreaded application that takes a list of URLs, spawns a thread 
 
 # Process Resources
 
-* Memory
-* Files
-* Environment
-* CPU Time
-* Signals
-* Network Resources
-* ProcFS
-* Linux Proc / Task structure
+## IDs and Namespaces
 
+## Memory
 
+## Files, File System and IO
 
-The rusage struct gives us 
+## Signals
+
+## Networking
+
+## Runtime Stats
 
 ```C
 struct rusage {
@@ -97,7 +139,12 @@ struct rusage {
 };
 ```
 
-# What are all these processes
+## Linux Proc / Task structure
+
+## ProcFS
+
+
+# What are all these processes on my system
 
 # Questions
 

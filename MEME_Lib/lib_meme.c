@@ -180,13 +180,19 @@ s32 meme_munmap(void* addr, u64 off)
     );
 }
 
-s64 clone(u64 flags, void *stack, s32* parent_tid, s32* child_tid, u64 tls)
+s64 meme_clone(u64 flags, void *stack, s32* parent_tid, s32* child_tid, u64 tls)
 {
     asm(
         "mov %rcx, %r10\n"    // for some reason 4th arg in C is %rcx but for syscall is %r10
         "mov $56, %rax\n"
         "syscall\n"
     );
+
+    register u64 ret asm("rax"); 
+    if(ret == 0)
+    {
+       asm("jmp %r8");
+    }
 }
 
 
