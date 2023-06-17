@@ -12,7 +12,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Globals
 ///////////////////////////////////////////////////////////////////////////////
-int flags = SIGCHLD | CLONE_NEWPID;
+int flags = SIGCHLD;
 int stack_size = 1024*1024;
 int _idx = 0;
 
@@ -26,6 +26,7 @@ typedef struct _id_t
     pid_t ppid;
     pid_t pgid;
     pid_t tid;
+    pid_t sid;
 } ids_t;
 
 void pull_ids(ids_t* ids)
@@ -34,6 +35,7 @@ void pull_ids(ids_t* ids)
     ids->ppid = getppid();
     ids->pgid = getpgid(0);
     ids->tid = syscall(SYS_gettid);
+    ids->sid = getsid(0);
 }
 
 void print_ids(char* name)
@@ -41,10 +43,11 @@ void print_ids(char* name)
     ids_t ids;
     pull_ids(&ids);
     printf("========== %s ==========\n", name);
-    printf("PID = %d\n", ids.pid);
+    printf("PID  = %d\n", ids.pid);
     printf("PPID = %d\n", ids.ppid);
     printf("PGID = %d\n", ids.pgid);
-    printf("TID = %d\n\n", ids.tid);
+    printf("TID  = %d\n", ids.tid);
+    printf("SID  = %d\n\n", ids.sid);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
