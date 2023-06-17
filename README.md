@@ -48,6 +48,7 @@ We start with [processes](./Processes/) where we see what composes them, how the
 * [ ] [System Calls](./System_Calls/)
 * [ ] [Signals](./Signals/)
 * [ ] [Interrupts](./Interrupts/)
+* [ ] [IPC](./IPC)
 
 ## TODO
 
@@ -55,6 +56,10 @@ We start with [processes](./Processes/) where we see what composes them, how the
 * [ ] Files, File Systems and Devices
 * [ ] Linux Network Stack
 * [ ] Semaphores, Mutexs, and CVs
+* [ ] Data Structures
+    * [ ] Doubly Linked List
+    * [ ] Radix Tree
+    * [ ] Bit Arrays
 * [ ] Appendix
     * [X] [GDB](./Appendix/GDB)
     * [ ] [BASH](./Appendix/Shell/)

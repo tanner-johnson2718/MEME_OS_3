@@ -126,7 +126,7 @@ We saw with threads that we have a god control over what resources are shared be
 
 The procFS file system gives userspace a glance into how the kernel sees a process. We have an [appendix item](../Appendix/Linux%20Kernel%20Interfaces/ProcFS/) that describes it in full detail. However, for now one should now a processes procfs entry is located at `/proc/<pid>`
 
-## IDs and Namespaces
+## IDs
 
 | ID | Expanded | Explanation |
 | --- | --- | --- |
@@ -135,11 +135,13 @@ The procFS file system gives userspace a glance into how the kernel sees a proce
 | pgid   | Process Group ID | Process Groups are mainly used to control the distribution of signals  |
 | tid    | Thread ID | Used to identify a thread amoungst a thread group all sharing the same PID |
 | tgid   | Thread Group ID  | Simply PID of lead process shared by all threads |
-| sid | Session ID | - |
+| sid | Session ID | Abstracts notion of a terminal launching and grouping processes |
 | NStgid | descendant namespace thread group ID hierarchy |   |
 | NSpid  | descendant namespace process ID hierarchy |   |
 | NSpgid | descendant namespace process group ID hierarchy |   |
-| NSsid  | descendant namespace session ID hierarchy |
+| NSsid  | descendant namespace session ID hierarchy | |
+
+## Namespaces
 
 * `man namespaces`
 * `man pid_namespaces`
@@ -147,6 +149,8 @@ The procFS file system gives userspace a glance into how the kernel sees a proce
 * `unshare()`
 * https://blog.quarkslab.com/digging-into-linux-namespaces-part-1.html
 * /proc/$$/ns
+* `ns.c` example
+    * run w/ and w/o `SIG_NEWPID` flag
 
 
 ```C
@@ -171,12 +175,9 @@ struct pid {
 ## Files, File System and IO
 
 * UID, GID
+* Cgroups?
 
-## Signals
-
-## IPC
-
-## Networking
+## Signals, IPC, Networking
 
 ## Runtime Stats
 

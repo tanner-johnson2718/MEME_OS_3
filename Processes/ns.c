@@ -8,11 +8,12 @@
 #include <sys/syscall.h>
 #include <sys/wait.h>
 #include <signal.h>
+#include <dirent.h> 
 
 ///////////////////////////////////////////////////////////////////////////////
 // Globals
 ///////////////////////////////////////////////////////////////////////////////
-int flags = SIGCHLD;
+int flags = SIGCHLD | CLONE_NEWPID;
 int stack_size = 1024*1024;
 int _idx = 0;
 
@@ -51,12 +52,40 @@ void print_ids(char* name)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+// Proc FS Shenanigans
+///////////////////////////////////////////////////////////////////////////////
+
+void dump_proc()
+{
+    DIR *d;
+    struct dirent *dir;
+    d = opendir("/proc");
+    if(d)
+    {
+        while ((dir = readdir(d)) != NULL) {
+            printf("%s\n", dir->d_name);
+        }
+        printf("\n");
+        closedir(d);
+    }
+    else{
+        printf("OPEN DIR failed\n");
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////
 // Thread Func
 ///////////////////////////////////////////////////////////////////////////////
 
 int f(void* in)
 {
     int idx = *((int*) in);
+
+    int ret = system("mount -t proc proc /proc");
+    if(ret < 0)
+    {
+        printf("Mounting new /proc failed!!");
+    }
 
     print_ids("Child Init");
 
@@ -67,17 +96,17 @@ int f(void* in)
         pid_t sub2_pid = fork();
         if(sub2_pid == 0)
         {
-            
+            dump_proc();
             // kill parent and wait
             print_ids("Sub 2 b4 murder");
             kill(getppid(), 9);
-            print_ids("Sub 2 after murder");
 
             while(getppid() != 1)
             {
                 sleep(1);
             }
 
+            print_ids("Sub 2 after murder");
             exit(0);
         }   
 
