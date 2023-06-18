@@ -8,7 +8,6 @@
 #include <sys/syscall.h>
 #include <sys/wait.h>
 #include <signal.h>
-#include <dirent.h> 
 
 ///////////////////////////////////////////////////////////////////////////////
 // Globals
@@ -51,27 +50,7 @@ void print_ids(char* name)
     printf("SID  = %d\n\n", ids.sid);
 }
 
-///////////////////////////////////////////////////////////////////////////////
-// Proc FS Shenanigans
-///////////////////////////////////////////////////////////////////////////////
 
-void dump_proc()
-{
-    DIR *d;
-    struct dirent *dir;
-    d = opendir("/proc");
-    if(d)
-    {
-        while ((dir = readdir(d)) != NULL) {
-            printf("%s\n", dir->d_name);
-        }
-        printf("\n");
-        closedir(d);
-    }
-    else{
-        printf("OPEN DIR failed\n");
-    }
-}
 
 ///////////////////////////////////////////////////////////////////////////////
 // Thread Func
@@ -150,6 +129,14 @@ int main()
     waitpid(child_tid, NULL, 0);
     free(child_stack);
     printf("Parent Exiting\n");
+
+    // Remount OG PS namesapce
+    int ret = system("mount -t proc proc /proc");
+    if(ret < 0)
+    {
+        printf("Mounting new /proc failed!!");
+    }
+
 
     return 0;
 }

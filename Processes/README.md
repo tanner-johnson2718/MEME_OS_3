@@ -150,7 +150,8 @@ The procFS file system gives userspace a glance into how the kernel sees a proce
 * https://blog.quarkslab.com/digging-into-linux-namespaces-part-1.html
 * /proc/$$/ns
 * `ns.c` example
-    * run w/ and w/o `SIG_NEWPID` flag
+    * run w/ and w/o `CLONE_NEWPID` flag
+	* W/ `CLONE_NEWPID`
 
 
 ```C
