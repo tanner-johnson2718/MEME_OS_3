@@ -68,7 +68,6 @@ We start with [processes](./Processes/) where we see what composes them, how the
     * [ ] [Linux Kernel Interfaces](./Appendix/Linux%20Kernel%20Interfaces/)
         * [ ] Sysfs
         * [X] [Procfs](./Appendix/Linux%20Kernel%20Interfaces/ProcFS/)
-        * [ ] Page Map
         * [ ] ioctl 
         
 # Pre-Reqs
