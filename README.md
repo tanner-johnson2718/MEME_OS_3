@@ -44,7 +44,7 @@ Part 2 is where we start to dig deeper into the kernel space. In part 1 we took 
 
 We start with [processes](./Processes/) where we see what composes them, how they are created and how this construct is used by linux to do useful systems things. We saw that process require heavy use of [system calls](./System_Calls/) and we also relied heavily on system calls in part one, so much so that we created our own wrappers for common system calls in part 1.5. Thus system calls are a natural second topic in this part and an important topic, as system calls are the primary way user space can ask the kernel to do priviledged tasks on its behalf. Now process control flow, state, and concurrent execution rely on [signals](./Signals/) and so we next looked at how signals can be used to sychronize two concurrent processes. And finally, signals are a userspace constuct and [interrupts](./) are the underlying OS and hardware concept behind and thus we concluded this part with an exploration of interrupts.
 
-* [ ] [Processes and Threads](./Processes)
+* [X] [Processes and Threads](./Processes)
 * [ ] [System Calls](./System_Calls/)
 * [ ] [Signals](./Signals/)
 * [ ] [Interrupts](./Interrupts/)
@@ -67,7 +67,7 @@ We start with [processes](./Processes/) where we see what composes them, how the
     * [ ] [Linker Scripts](./Appendix/Linker_Scripts/)
     * [ ] [Linux Kernel Interfaces](./Appendix/Linux%20Kernel%20Interfaces/)
         * [ ] Sysfs
-        * [ ] [Procfs](./Appendix/Linux%20Kernel%20Interfaces/ProcFS/)
+        * [X] [Procfs](./Appendix/Linux%20Kernel%20Interfaces/ProcFS/)
         * [ ] Page Map
         * [ ] ioctl 
         

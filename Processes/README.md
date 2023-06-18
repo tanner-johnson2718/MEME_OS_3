@@ -120,11 +120,13 @@ Ideally we would do a deeper dive on how clone works, thread local storage, etc.
 
 # Process Resources
 
-We saw with threads that we have a god control over what resources are shared between parent and child. Thus in this section we want to be a bit more precise and exhaustivly look at these resources
+We saw with threads that we have a god control over what resources are shared between parent and child. Thus in this section we want to be a bit more precise and exhaustivly look at these resources.
 
 ## ProcFS
 
-The procFS file system gives userspace a glance into how the kernel sees a process. We have an [appendix item](../Appendix/Linux%20Kernel%20Interfaces/ProcFS/) that describes it in full detail. However, for now one should now a processes procfs entry is located at `/proc/<pid>`
+The procFS file system gives userspace a glance into how the kernel sees a process. We have an [appendix item](../Appendix/Linux%20Kernel%20Interfaces/ProcFS/) that describes it in full detail. However, for now one should now a processes procfs entry is located at `/proc/<pid>`.  
+
+We leave this more as a quick bullet pointed reference for the follwing reason. 1) not every process resource is of our explicit interest at the moment and is better to know it exists than to know every little thing in detail. 2) many of these resources will be covered in later sections. 3) it relies heavily on the procFS file system for which we already have an [appendix item](../Appendix/Linux%20Kernel%20Interfaces/ProcFS/) for.
 
 ## IDs
 
@@ -150,8 +152,12 @@ The procFS file system gives userspace a glance into how the kernel sees a proce
 * https://blog.quarkslab.com/digging-into-linux-namespaces-part-1.html
 * /proc/$$/ns
 * `ns.c` example
-    * run w/ and w/o `CLONE_NEWPID` flag
-	* W/ `CLONE_NEWPID`
+	* Parent launches child w/ `CLONE_NEWNS`
+	* Child becomes init process in pid name space
+	* child launches sub1 who launches sub2
+	* sub2 kills sub 1
+	* sub2 becomes child of init process in that name space
+	* requires mounting and re-mouning old proc fs when new name space is created.
 
 
 ```C
@@ -173,12 +179,13 @@ struct pid {
 
 ## (Virtual) Memory
 
-## Files, File System and IO
+* `/proc/<pid>/maps` - shows all mapped Vitural mem.
+* `/proc/<pid>/map_files` - shows linked virt mem segments
+* `/proc/<pid>/page_map` shows linked virt mem segments
 
-* UID, GID
-* Cgroups?
+## Files, File System, IO, Signals, IPC, Networking
 
-## Signals, IPC, Networking
+* These will be explicit topics in the future and we will use the process resources as a starting point for these topics.
 
 ## Runtime Stats
 
@@ -203,13 +210,7 @@ struct rusage {
 };
 ```
 
-# What are all these processes on my system
-
-## PS cmd line utility
-
-# Questions
-
-* What are these "sys/*" includes? Are the libc or system headers?
+* See `rusage.c`
 
 
 # Linux Proc / Task structure
