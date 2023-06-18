@@ -1,5 +1,5 @@
 procFS: procFS.c procFS.h
-	gcc -o procFS procFS.c
+	gcc -c procFS.c
 
 clean:
-	rm -rf procFS
+	rm -rf procFS *.o

@@ -20,8 +20,10 @@ clone: clone.c
 	gcc $(FLAGS) -o clone clone.c ../MEME_Lib/lib_meme.o
 
 ns: ns.c
-	gcc -o ns ns.c
+	make procFS -C ../Appendix/Linux\ Kernel\ Interfaces/ProcFS/
+	gcc -I../Appendix/Linux\ Kernel\ Interfaces/ProcFS/ -o ns ns.c ../Appendix/Linux\ Kernel\ Interfaces/ProcFS/procFS.o
 
 clean:
 	rm -rf proc rusage test state clone ns 
 	make clean -C ../MEME_Lib/
+	make clean -C ../Appendix/Linux\ Kernel\ Interfaces/ProcFS/

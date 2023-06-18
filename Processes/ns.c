@@ -9,6 +9,8 @@
 #include <sys/wait.h>
 #include <signal.h>
 
+#include "procFS.h"
+
 ///////////////////////////////////////////////////////////////////////////////
 // Globals
 ///////////////////////////////////////////////////////////////////////////////
@@ -27,6 +29,10 @@ typedef struct _id_t
     pid_t pgid;
     pid_t tid;
     pid_t sid;
+    pid_t NStgid;
+    pid_t NSpid;
+    pid_t NSpgid;
+    pid_t NSsid;
 } ids_t;
 
 void pull_ids(ids_t* ids)
@@ -36,6 +42,23 @@ void pull_ids(ids_t* ids)
     ids->pgid = getpgid(0);
     ids->tid = syscall(SYS_gettid);
     ids->sid = getsid(0);
+    ids->NStgid = query_procFS_int(ids->pid, "NStgid");
+    ids->NSpid = query_procFS_int(ids->pid, "NSpid");
+    ids->NSpgid = query_procFS_int(ids->pid, "NSpgid");
+    ids->NSsid = query_procFS_int(ids->pid, "NSpgid");
+}
+
+void pull_ids_procFS(ids_t* ids, pid_t pid)
+{
+    ids->pid = query_procFS_int(pid, "Pid");
+    ids->ppid = query_procFS_int(pid, "PPid");
+    ids->pgid = -1;
+    ids->tid = -1;
+    ids->sid = -1;
+    ids->NStgid = query_procFS_int(pid, "NStgid");
+    ids->NSpid = query_procFS_int(pid, "NSpid");
+    ids->NSpgid = query_procFS_int(pid, "NSpgid");
+    ids->NSsid = query_procFS_int(pid, "NSpgid");
 }
 
 void print_ids(char* name)
@@ -43,13 +66,32 @@ void print_ids(char* name)
     ids_t ids;
     pull_ids(&ids);
     printf("========== %s ==========\n", name);
-    printf("PID  = %d\n", ids.pid);
-    printf("PPID = %d\n", ids.ppid);
-    printf("PGID = %d\n", ids.pgid);
-    printf("TID  = %d\n", ids.tid);
-    printf("SID  = %d\n\n", ids.sid);
+    printf("PID     = %d\n", ids.pid);
+    printf("PPID    = %d\n", ids.ppid);
+    printf("PGID    = %d\n", ids.pgid);
+    printf("TID     = %d\n", ids.tid);
+    printf("SID     = %d\n", ids.sid);
+    printf("NStgid  = %d\n", ids.NStgid);
+    printf("NSpid   = %d\n", ids.NSpid);
+    printf("NSpgid  = %d\n", ids.NSpgid);
+    printf("NSsid   = %d\n", ids.NSsid);
 }
 
+void print_ids_procFS(char* name, pid_t pid)
+{
+    ids_t ids;
+    pull_ids_procFS(&ids, pid);
+    printf("========== %s ==========\n", name);
+    printf("PID     = %d\n", ids.pid);
+    printf("PPID    = %d\n", ids.ppid);
+    printf("PGID    = %d\n", ids.pgid);
+    printf("TID     = %d\n", ids.tid);
+    printf("SID     = %d\n", ids.sid);
+    printf("NStgid  = %d\n", ids.NStgid);
+    printf("NSpid   = %d\n", ids.NSpid);
+    printf("NSpgid  = %d\n", ids.NSpgid);
+    printf("NSsid   = %d\n", ids.NSsid);
+}
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -60,24 +102,25 @@ int f(void* in)
 {
     int idx = *((int*) in);
 
+    sleep(1);
+
     int ret = system("mount -t proc proc /proc");
     if(ret < 0)
     {
         printf("Mounting new /proc failed!!");
     }
 
-    print_ids("Child Init");
+    print_ids("Child Init (Inner NS)");
 
     pid_t sub1_pid = fork();
     if(sub1_pid == 0)
     {
-        print_ids("Sub 1");
+        print_ids("Sub 1 (Inner NS)");
         pid_t sub2_pid = fork();
         if(sub2_pid == 0)
         {
-            dump_proc();
             // kill parent and wait
-            print_ids("Sub 2 b4 murder");
+            print_ids("Sub 2 b4 murder (Inner NS)");
             kill(getppid(), 9);
 
             while(getppid() != 1)
@@ -85,7 +128,7 @@ int f(void* in)
                 sleep(1);
             }
 
-            print_ids("Sub 2 after murder");
+            print_ids("Sub 2 after murder (Inner NS)");
             exit(0);
         }   
 
@@ -116,7 +159,7 @@ int f(void* in)
 int main()
 {
 
-    print_ids("Parent");
+    print_ids("Parent (Outer NS)");
 
     void* child_stack = malloc(stack_size);
     int child_tid = clone(&f, child_stack + stack_size, flags ,&_idx);
@@ -125,6 +168,9 @@ int main()
         printf("CLONE FAILED\n");
         return 1;
     }
+
+    print_ids_procFS("Init (Outer NS)", child_tid);
+    kill(child_tid, SIGCONT);
 
     waitpid(child_tid, NULL, 0);
     free(child_stack);

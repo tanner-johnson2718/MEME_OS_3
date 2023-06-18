@@ -9,7 +9,6 @@
 
 #include "procFS.h"
 
-
 #define INCLUDE_TEST_DRIVER 0
 #define MAX_PATH_SIZE 64
 #define MAX_PROC_FS_LINE_SZIE 256

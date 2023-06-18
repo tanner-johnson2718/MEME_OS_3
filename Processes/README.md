@@ -136,17 +136,17 @@ The procFS file system gives userspace a glance into how the kernel sees a proce
 | tid    | Thread ID | Used to identify a thread amoungst a thread group all sharing the same PID |
 | tgid   | Thread Group ID  | Simply PID of lead process shared by all threads |
 | sid | Session ID | Abstracts notion of a terminal launching and grouping processes |
-| NStgid | descendant namespace thread group ID hierarchy |   |
-| NSpid  | descendant namespace process ID hierarchy |   |
-| NSpgid | descendant namespace process group ID hierarchy |   |
-| NSsid  | descendant namespace session ID hierarchy | |
+| NStgid | descendant namespace thread group ID hierarchy | - |
+| NSpid  | descendant namespace process ID hierarchy | - |
+| NSpgid | descendant namespace process group ID hierarchy | - |
+| NSsid  | descendant namespace session ID hierarchy | - |
 
 ## Namespaces
 
 * `man namespaces`
 * `man pid_namespaces`
-* `setns()`
-* `unshare()`
+* `man setns`
+* `man unshare`
 * https://blog.quarkslab.com/digging-into-linux-namespaces-part-1.html
 * /proc/$$/ns
 * `ns.c` example
