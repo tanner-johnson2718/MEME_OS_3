@@ -42,7 +42,7 @@ It was clear from part 1 that libc introduces all sorts of weirdness. To keep ou
 
 Part 2 is where we start to dig deeper into the kernel space. In part 1 we took for granted process creation and system calls without digging too deep into what happens before the dynamic linker or my entry point is given control. We also did not dig to deep into what happens when I raise a system call with the instruction `syscall` or analgously use the C standard library wrappers for system calls. Thus in this we part we dig into these concepts. Part one dealt with singular process, hello world. We coin this part Async b/c this where we start to look into the rabbit hole that is how several programs run concurrently.
 
-We start with [processes](./Processes/) where we see what composes them, how they are created and how this construct is used by linux to do useful systems things. We saw that process require heavy use of [system calls](./System_Calls/) and we also relied heavily on system calls in part one, so much so that we created our own wrappers for common system calls in part 1.5. Thus system calls are a natural second topic in this part and an important topic, as system calls are the primary way user space can ask the kernel to do priviledged tasks on its behalf. Now process control flow, state, and concurrent execution rely on [signals](./Signals/) and so we next looked at how signals can be used to sychronize two concurrent processes. And finally, signals are a userspace constuct and [interrupts](./) are the underlying OS and hardware concept behind and thus we concluded this part with an exploration of interrupts.
+We start with [processes](./Processes/) where we see what composes them, how they are created and how this construct is used by linux to do useful systems things. We saw that process require heavy use of [system calls](./System_Calls/) and we also relied heavily on system calls in part one, so much so that we created our own wrappers for common system calls in part 1.5. Thus system calls are a natural second topic in this part and an important topic, as system calls are the primary way user space can ask the kernel to do priviledged tasks on its behalf. Now process control flow, state, and concurrent execution rely on [signals](./Signals/) and so we next looked at how signals can be used to sychronize two concurrent processes. And finally, signals are a userspace constuct and [interrupts](./Interrupts/) are the underlying OS and hardware concept behind and thus we concluded this part with an exploration of interrupts.
 
 * [X] [Processes and Threads](./Processes)
 * [ ] [System Calls](./System_Calls/)
@@ -68,7 +68,8 @@ We start with [processes](./Processes/) where we see what composes them, how the
     * [ ] [Linux Kernel Interfaces](./Appendix/Linux%20Kernel%20Interfaces/)
         * [ ] Sysfs
         * [X] [Procfs](./Appendix/Linux%20Kernel%20Interfaces/ProcFS/)
-        * [ ] ioctl 
+        * [ ] ioctl
+    * [ ] Linux Services.
         
 # Pre-Reqs
 
