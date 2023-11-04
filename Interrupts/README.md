@@ -1,1 +1,0 @@
-*ldtr, vector table
